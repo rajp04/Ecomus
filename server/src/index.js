@@ -1,0 +1,26 @@
+const express = require('express')
+const dotenv = require("dotenv")
+const cors = require('cors');
+
+dotenv.config()
+const app = express()
+const port = process.env.PORT || 1001
+const Database = require('./Database/db');
+const Users = require('./Routes/userRouter');
+const Admin = require('./Routes/adminRouter');
+const Role = require('./Routes/roleRouter');
+const { SetDefaultAdmin } = require('./Controller/adminController');
+
+app.use(cors())
+app.use(express.json({ limit: "16kb" }))
+app.use(express.urlencoded({ extended: true, limit: "16kb" }))
+
+Database();
+SetDefaultAdmin()
+app.use('/api/users', Users);
+app.use('/api/admin', Admin);
+app.use('/api/role', Role);
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+})

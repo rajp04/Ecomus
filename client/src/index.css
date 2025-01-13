@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.topbar-color {
+    color: black !important;
+}
+
+.topbar-color .topbar-angle {
+    margin-left: 10px !important;
+}
+
+.home-banner-color {
+    color: white !important;
+    text-transform: capitalize !important;
+    font-size: 20px !important;
+}
+
+@media(max-width:768px) {
+    .home-banner-color {
+        color: white !important;
+        text-transform: capitalize !important;
+        font-size: 18px !important;
+    }
+}
+
+@media(max-width:508px) {
+    .home-banner-color {
+        color: white !important;
+        text-transform: capitalize !important;
+        font-size: 16px !important;
+    }
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.marquee {
+    display: flex;
+    width: fit-content;
+    animation: scroll 40s linear infinite;
+    white-space: nowrap;
+}
+
+.css-voecp4-MuiInputBase-input-MuiFilledInput-input {
+    background: '' !important;
+}
+
+.css-1mb1do-MuiInputBase-root-MuiFilledInput-root::before {
+    border-bottom: 0px !important;
+}
+
+.css-1osjgpz>:not(style) {
+    margin: 5px 0px !important;
+}
+
+.slick-prev,
+.slick-next {
+    display: block !important;
+    z-index: 2;
+}
+
+.slick-prev::before,
+.slick-next::before {
+    color: black;
+    font-size: 24px;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 5px;
+    white-space: nowrap;
+    position: absolute;
+    z-index: 1;
+    bottom: 110%;
+    left: 50%;
+    font-size: 12px;
+    margin-left: -35px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.check-btn{
+    white-space: nowrap!important;
+    background-color: black!important;
+    color: white!important;
+    text-transform: capitalize!important;
+    padding: 10px 2px!important;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+    width: 0px !important;
+    color: white;
+    background-color: white;
+    height: 3px;
+}
+
+.cart-button{
+    font-weight: 600!important;
+    font-size: medium!important;
+    background-color: black!important;
+    padding: 9px 0px!important;
+    width: 100%!important;
+    color: white!important;
+    text-transform: capitalize!important;
+}
