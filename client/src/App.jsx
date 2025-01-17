@@ -5,6 +5,7 @@ import Register from './components/Register';
 import Wishlist from './components/Wishlist';
 import ShopDefault from './components/ShopDefault';
 import ProductDetails from './components/ProductDetails';
+import Account from './components/Account';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/wishlist' element={<Wishlist />} />
         <Route path='/shop-default' element={<ShopDefault />} />
         <Route path='/product-details' element={<ProductDetails />} />
+        <Route path='/account' element={<Account />} />
       </Routes>
     </BrowserRouter>
   )

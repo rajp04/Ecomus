@@ -14,9 +14,20 @@ import { FaRegQuestionCircle } from "react-icons/fa";
 import { LuShip } from "react-icons/lu";
 import { RiExchangeCnyLine } from "react-icons/ri";
 import { AiOutlineSafety } from "react-icons/ai";
+import Description from './Description';
+import AdditionalInfo from './AdditionalInfo';
+import Return from './Return';
+import Review from './Review';
+import Shipping from './Shipping';
+import Slider from "react-slick";
+import { CgShoppingBag } from "react-icons/cg";
+import { IoIosHeartEmpty } from "react-icons/io";
+// import { TbArrowsCross } from "react-icons/tb";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 function ProductDetails() {
 
+    const [selectMenu, setSelectMenu] = useState('description')
 
     const images = [
         "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod13.jpg",
@@ -29,10 +40,6 @@ function ProductDetails() {
         "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod20.jpg",
         "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod21.jpg",
         "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod22.jpg",
-        "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod23.jpg",
-        "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod23.jpg",
-        "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod23.jpg",
-        "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod23.jpg",
         "https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod23.jpg",
     ];
 
@@ -55,6 +62,42 @@ function ProductDetails() {
         }
     };
 
+    const handleDisplay = (menu) => {
+        setSelectMenu(menu)
+    }
+
+    const settings = {
+        dots: false, // Hides the dots
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1, // Only show one slide at a time
+        slidesToScroll: 1,
+        arrows: true, // Shows the navigation arrows
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                },
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 2, // Shows 2 slides on medium screens
+                    slidesToScroll: 1,
+                },
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1, // Shows 1 slide on smaller screens
+                    slidesToScroll: 1,
+                },
+            },
+        ],
+    };
+
     return (
         <>
             <Header />
@@ -74,21 +117,7 @@ function ProductDetails() {
                     </div>
                 </div>
 
-                {/* <div className='grid grid-cols-2 gap-10 pt-5'>
-                    <div className='col-span-1 grid-cols-7 gap-2 grid h-screen '>
-                        <div className='col-span-1 flex flex-col space-y-2 overflow-y-auto scroll-hidden'>
-                            <img src="https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod13.jpg" alt="" className='rounded-md border-2 border-black'/>
-                            <img src="https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod13.jpg" alt="" className='rounded-md border-2 border-black'/>
-                            <img src="https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod13.jpg" alt="" className='rounded-md border-2 border-black'/>
-                            <img src="https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod13.jpg" alt="" className='rounded-md border-2 border-black'/>
-                            <img src="https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod13.jpg" alt="" className='rounded-md border-2 border-black'/>
-                        </div>
-                        <div className='col-span-6'>
-                            <img src="https://themesflat.co/html/ecomus/images/shop/products/hmgoepprod13.jpg" alt="" className='rounded-md'/>
-                        </div>
-                    </div>
-                </div> */}
-                <div className="grid md:grid-cols-2 grid-cols-1 gap-10 pt-8 pb-60">
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-10 pt-8">
                     <div className="col-span-1 llg:grid-cols-7 flex llg:flex-row flex-col-reverse gap-2 llg:h-screen llg:grid overflow-hidden">
                         <div className="col-span-1 flex llg:flex-col overflow-y-auto llg:space-x-0  llg:space-y-2 space-x-2 scroll-hidden">
                             {images.map((image, index) => (
@@ -240,7 +269,30 @@ function ProductDetails() {
                         </div>
                     </div>
                 </div>
+
+                <div className='border rounded-md mt-24 mb-10 px-8 py-3 border-gray-300'>
+                    <div className='flex items-center md:space-x-10 space-x-5 border-b border-gray-300 overflow-x-auto lg:text-xl '>
+                        <h1 className={`font-bold pb-4 cursor-pointer ${selectMenu === 'description' ? 'border-b-2 border-black' : ''}`} onClick={() => handleDisplay('description')}>Description</h1>
+                        <h1 className={`font-bold pb-4 cursor-pointer whitespace-nowrap ${selectMenu === 'additinalInfo' ? 'border-b-2 border-black' : ''}`} onClick={() => handleDisplay('additinalInfo')}>Additional Information</h1>
+                        <h1 className={`font-bold pb-4 cursor-pointer ${selectMenu === 'review' ? 'border-b-2 border-black' : ''}`} onClick={() => handleDisplay('review')}>Review</h1>
+                        <h1 className={`font-bold pb-4 cursor-pointer ${selectMenu === 'shipping' ? 'border-b-2 border-black' : ''}`} onClick={() => handleDisplay('shipping')}>Shipping</h1>
+                        <h1 className={`font-bold pb-4 cursor-pointer whitespace-nowrap ${selectMenu === 'return' ? 'border-b-2 border-black' : ''}`} onClick={() => handleDisplay('return')}>Return Policies</h1>
+                    </div>
+
+                    <div className='pt-10 pb-5'>
+                        {selectMenu === 'description' ? <Description /> : ''}
+                        {selectMenu === 'additinalInfo' ? <AdditionalInfo /> : ''}
+                        {selectMenu === 'review' ? <Review /> : ''}
+                        {selectMenu === 'shipping' ? <Shipping /> : ''}
+                        {selectMenu === 'return' ? <Return /> : ''}
+                    </div>
+                </div>
+
+                <div className='pt-14'>
+                    <h1 className='text-5xl text-center'>People Also Bought</h1>
+                    
             </div>
+        </div >
         </>
     )
 }

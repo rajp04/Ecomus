@@ -104,12 +104,12 @@
     visibility: visible;
 }
 
-.check-btn{
-    white-space: nowrap!important;
-    background-color: black!important;
-    color: white!important;
-    text-transform: capitalize!important;
-    padding: 10px 2px!important;
+.check-btn {
+    white-space: nowrap !important;
+    background-color: black !important;
+    color: white !important;
+    text-transform: capitalize !important;
+    padding: 10px 2px !important;
 }
 
 .scroll-hidden::-webkit-scrollbar {
@@ -119,12 +119,27 @@
     height: 3px;
 }
 
-.cart-button{
-    font-weight: 600!important;
-    font-size: medium!important;
-    background-color: black!important;
-    padding: 9px 0px!important;
-    width: 100%!important;
+.cart-button {
+    font-weight: 600 !important;
+    font-size: medium !important;
+    background-color: black !important;
+    padding: 9px 0px !important;
+    width: 100% !important;
+    color: white !important;
+    text-transform: capitalize !important;
+}
+
+.bor_hidden {
+    visibility: hidden;
+}
+
+.add_btn {
     color: white!important;
+    background-color: black!important;
+    padding: 12px 35px!important;
     text-transform: capitalize!important;
+}
+
+.css-voecp4-MuiInputBase-input-MuiFilledInput-input{
+    background: #fff!important;
 }
