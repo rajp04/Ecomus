@@ -146,4 +146,31 @@ const Update = async (req, res) => {
     }
 }
 
-module.exports = { Register, Login, GetUsers, GetUserById, Delete, Update }
+
+const ForgetPassword = async (req, res) => {
+    try {
+
+        const { email, password } = req.body;
+
+        const existingEmail = await User.findOneAndUpdate(email, { password }, { new: true });
+        if (!existingEmail) {
+            return res.json({
+                success: 0,
+                message: "Email id not found."
+            })
+        }
+
+        return res.json({
+            success: 1,
+            message: "Password reset successfully."
+        })
+    } catch (error) {
+        return res.json({
+            success: 0,
+            message: error.message
+        })
+    }
+}
+
+
+module.exports = { Register, Login, GetUsers, GetUserById, Delete, Update, ForgetPassword }

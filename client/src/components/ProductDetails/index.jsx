@@ -67,36 +67,62 @@ function ProductDetails() {
     }
 
     const settings = {
-        dots: false, // Hides the dots
+        dots: false,
         infinite: true,
         speed: 500,
-        slidesToShow: 1, // Only show one slide at a time
+        slidesToShow: 4,
         slidesToScroll: 1,
-        arrows: true, // Shows the navigation arrows
+        arrows: true,
         responsive: [
             {
-                breakpoint: 1024,
+                breakpoint: 1150,
                 settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
+                    slidesToShow: 4,
                 },
             },
             {
                 breakpoint: 768,
                 settings: {
-                    slidesToShow: 2, // Shows 2 slides on medium screens
-                    slidesToScroll: 1,
+                    slidesToShow: 3,
                 },
             },
             {
-                breakpoint: 480,
+                breakpoint: 576,
                 settings: {
-                    slidesToShow: 1, // Shows 1 slide on smaller screens
-                    slidesToScroll: 1,
+                    slidesToShow: 2,
                 },
             },
         ],
     };
+
+    const productData = [
+        {
+          img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
+          name: "Ribbed Tank Top",
+          price: "$16.95",
+        },
+        {
+          img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
+          name: "Ribbed Tank Top",
+          price: "$16.95",
+        },
+        {
+          img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
+          name: "Ribbed Tank Top",
+          price: "$16.95",
+        },
+        {
+          img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
+          name: "Ribbed Tank Top",
+          price: "$16.95",
+        },
+        {
+          img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
+          name: "Ribbed Tank Top",
+          price: "$16.95",
+        },
+      
+      ];
 
     return (
         <>
@@ -290,9 +316,68 @@ function ProductDetails() {
 
                 <div className='pt-14'>
                     <h1 className='text-5xl text-center'>People Also Bought</h1>
-                    
-            </div>
-        </div >
+                    <div className="pt-16 gap-5">
+                        <Slider {...settings}>
+                            {productData.map((product, index) => (
+                                <div key={index} className="space-y-2 pb-5">
+                                    <div className="overflow-hidden rounded-md relative transition-all duration-1000 group inline-flex items-center justify-center cursor-pointer">
+                                        <img
+                                            src={product.img}
+                                            alt={product.name}
+                                            className="rounded-md hover:scale-[1.12] transition-all duration-[2s]"
+                                        />
+                                        <div className="absolute flex space-x-3 bottom-14 transition-all duration-1000">
+                                            <div className="tooltip">
+                                                <div className="hidden group-hover:block transition-all duration-1000">
+                                                    <CgShoppingBag className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                                                    <span className="tooltiptext">Quick Add</span>
+                                                </div>
+                                            </div>
+                                            <div className="tooltip">
+                                                <div className="hidden group-hover:block transition-all duration-1000">
+                                                    <IoIosHeartEmpty className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                                                    <span className="tooltiptext">Add to Wishlist</span>
+                                                </div>
+                                            </div>
+                                            <div className="tooltip">
+                                                <div className="hidden group-hover:block transition-all duration-1000">
+                                                    <TbArrowsCross className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                                                    <span className="tooltiptext">Add to Compare</span>
+                                                </div>
+                                            </div>
+                                            <div className="tooltip">
+                                                <div className="hidden group-hover:block transition-all duration-1000">
+                                                    <MdOutlineRemoveRedEye className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                                                    <span className="tooltiptext">Quick View</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="absolute hidden group-hover:block bottom-0 w-full space-x-3 bg-[#0000004d] z-20 text-center text-white font-semibold py-1 transition-all duration-1000">
+                                            <span>S</span>
+                                            <span>M</span>
+                                            <span>L</span>
+                                            <span>XL</span>
+                                        </div>
+                                    </div>
+                                    <h1 className="hover:text-[red]">{product.name}</h1>
+                                    <h1 className="font-semibold">{product.price}</h1>
+                                    <div className="flex items-center space-x-3">
+                                        <div className="hover:border border-black h-7 cursor-pointer w-7 flex items-center justify-center rounded-full">
+                                            <p className="bg-[yellow] h-5 w-5 hover:w-3 hover:h-3 transition-all duration-500 rounded-full"></p>
+                                        </div>
+                                        <div className="hover:border border-black h-7 cursor-pointer w-7 flex items-center justify-center rounded-full">
+                                            <p className="bg-[black] h-5 w-5 hover:w-3 hover:h-3 transition-all duration-500 rounded-full"></p>
+                                        </div>
+                                        <div className="hover:border border-black h-7 cursor-pointer w-7 flex items-center justify-center rounded-full">
+                                            <p className="bg-gray-200 h-5 w-5 hover:w-3 hover:h-3 transition-all duration-500 rounded-full"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </Slider>
+                    </div>
+                </div>
+            </div >
         </>
     )
 }

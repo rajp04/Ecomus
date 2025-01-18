@@ -9,6 +9,7 @@ const Database = require('./Database/db');
 const Users = require('./Routes/userRouter');
 const Admin = require('./Routes/adminRouter');
 const Role = require('./Routes/roleRouter');
+const Product = require('./Routes/productRouter');
 const { SetDefaultAdmin } = require('./Controller/adminController');
 
 app.use(cors())
@@ -20,6 +21,7 @@ SetDefaultAdmin()
 app.use('/api/users', Users);
 app.use('/api/admin', Admin);
 app.use('/api/role', Role);
+app.use('/api/product', Product);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

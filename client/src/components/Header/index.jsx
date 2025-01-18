@@ -306,7 +306,7 @@ function Header() {
 
                 {/* Shopping Cart */}
                 <div className="relative cursor-pointer">
-                    <p className="absolute -top-2 left-3 h-5 w-5 text-[16px] bg-[red] text-white rounded-full flex items-center justify-center">
+                    <p className="absolute -top-2 left-3 h-4 w-4 flex items-center justify-center text-[15px] bg-[red] text-white rounded-full">
                         0
                     </p>
                     <div onClick={toggleDrawerCart(true)}>

@@ -19,6 +19,8 @@ function Account() {
 
     const handleSelect = (selected) => {
         setSelect(selected)
+        navigate('')
+        setIsOpenSearch(false)
     }
 
     const toggleDrawerSearch = (open) => (event) => {
@@ -40,14 +42,8 @@ function Account() {
                         <IoClose className="text-2xl" onClick={toggleDrawerSearch(false)} />
                     </div>
                     <div className="px-5 space-y-3">
-                        <button className={`${select === 'dashboard' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => {
-                            toggleDrawerSearch(false)
-                            handleSelect('dashboard')
-                        }}>Dashboard</button>
-                        <button className={`${select === 'orders' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => {
-                            toggleDrawerSearch(false)
-                            handleSelect('orders')
-                        }}>Orders</button>
+                        <button className={`${select === 'dashboard' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => handleSelect('dashboard')}>Dashboard</button>
+                        <button className={`${select === 'orders' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => handleSelect('orders')}>Orders</button>
                         <button className={`${select === 'address' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => handleSelect('address')}>Address</button>
                         <button className={`${select === 'accountdetails' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => handleSelect('accountdetails')}>Account Details</button>
                         <button className={`${select === 'wishlist' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => handleSelect('wishlist')}>Wishlist</button>

@@ -6,6 +6,10 @@ import Wishlist from './components/Wishlist';
 import ShopDefault from './components/ShopDefault';
 import ProductDetails from './components/ProductDetails';
 import Account from './components/Account';
+import Error from './components/Error';
+import Contact from './components/Contact';
+import Checkout from './components/Checkout';
+import AdminLogin from './components/Admin/Login';
 
 function App() {
   return (
@@ -18,6 +22,10 @@ function App() {
         <Route path='/shop-default' element={<ShopDefault />} />
         <Route path='/product-details' element={<ProductDetails />} />
         <Route path='/account' element={<Account />} />
+        <Route path='/checkout' element={<Checkout />} />
+        <Route path='/contact' element={<Contact />} />
+        <Route path='/admin/login' element={<AdminLogin />} />
+        <Route path='*' element={<Error />} />
       </Routes>
     </BrowserRouter>
   )
