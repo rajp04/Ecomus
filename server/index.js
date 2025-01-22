@@ -5,12 +5,12 @@ const cors = require('cors');
 dotenv.config()
 const app = express()
 const port = process.env.PORT || 1001
-const Database = require('./Database/db');
-const Users = require('./Routes/userRouter');
-const Admin = require('./Routes/adminRouter');
-const Role = require('./Routes/roleRouter');
-const Product = require('./Routes/productRouter');
-const { SetDefaultAdmin } = require('./Controller/adminController');
+const Database = require('./src/Database/db');
+const Users = require('./src/Routes/userRouter');
+const Admin = require('./src/Routes/adminRouter');
+const Role = require('./src/Routes/roleRouter');
+const Product = require('./src/Routes/productRouter');
+const { SetDefaultAdmin } = require('./src/Controller/adminController');
 
 app.use(cors())
 app.use(express.json({ limit: "16kb" }))
