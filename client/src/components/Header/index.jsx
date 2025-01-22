@@ -9,7 +9,7 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import { BiSearch } from "react-icons/bi";
 import { IoCloseSharp } from "react-icons/io5";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Menu } from "@mui/material";
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { MdOutlineLocalShipping } from "react-icons/md";
@@ -18,12 +18,20 @@ import { FiGift } from "react-icons/fi";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { FaPlus } from "react-icons/fa6";
 import { GrSubtract } from "react-icons/gr";
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
 
 function Header() {
 
     const [number, setNumber] = React.useState(1);
     const [isOpenSearch, setIsOpenSearch] = React.useState(false);
     const [isOpenCart, setIsOpenCart] = React.useState(false);
+    const [isOpenMenu, setIsOpenMenu] = React.useState(false);
+    const [openItem, setOpenItem] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl1, setAnchorEl1] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const open1 = Boolean(anchorEl1);
 
     const toggleDrawerSearch = (open) => (event) => {
         if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
@@ -38,6 +46,13 @@ function Header() {
         setIsOpenCart(open);
     };
 
+    const toggleDrawerMenu = (open) => (event) => {
+        if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+            return;
+        }
+        setIsOpenMenu(open);
+    };
+
     const handlePlus = () => {
         setNumber(number + 1)
     }
@@ -46,6 +61,21 @@ function Header() {
         if (number > 0) {
             setNumber(number - 1);
         }
+    };
+
+    const handleToggle = (item) => {
+        setOpenItem(openItem === item ? null : item);
+    };
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClick1 = (event) => {
+        setAnchorEl1(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+        setAnchorEl1(null);
     };
 
     const drawerSearchContent = (
@@ -137,7 +167,7 @@ function Header() {
             sx={{ paddingTop: 0, padding: 0, margin: 0 }}
         >
             <List>
-                <div className="h-[100%] overflow-hidden relative xs:w-[450px] w-auto bg-white">
+                <div className="h-[100%] overflow-hidden relative xs:w-[450px] w-[300px] bg-white">
                     <div className="fixed px-8 h-[150px] xs:w-[450px] w-auto z-10 bg-white">
                         <div className="flex items-center border-b py-3 justify-between xs:space-x-0 space-x-10">
                             <h1 className="text-3xl font-semibold whitespace-nowrap">Shopping cart</h1>
@@ -207,7 +237,7 @@ function Header() {
                             </div>
                         </div>
                     </div>
-                    <div className="fixed w-[450px] bottom-0 z-20">
+                    <div className="fixed xs:w-[450px] w-[300px] bottom-0 z-20">
                         <div className="bg-gray-200 px-8 py-5 flex items-center justify-center space-x-3">
                             <div className="bg-white hover:bg-[red] hover:text-white transition-all duration-300 rounded-md px-6 py-2 cursor-pointer">
                                 <MdOutlineEditCalendar className="text-2xl" />
@@ -242,10 +272,205 @@ function Header() {
         </Box>
     );
 
+    const drawerMenuContent = (
+        <Box
+            role="presentation"
+            sx={{ paddingTop: 0, padding: 0, margin: 0, overflowY: 'hidden' }}
+        >
+            <List>
+                <div className="p-4 xs:w-[400px] w-[300px] bg-white">
+                    <IoCloseSharp className="text-3xl font-semibold cursor-pointer bg-white" onClick={toggleDrawerMenu(false)} />
+                    <div className="overflow-y-auto h-[480px] pe-2">
+                        {/* Home Section */}
+                        <div className="border-b pb-2">
+                            <div className="flex items-center justify-between" onClick={() => handleToggle("home")}>
+                                <h1>Home</h1>
+                                {openItem === "home" ? (
+                                    <GrSubtract className="text-xl font-bold cursor-pointer" />
+                                ) : (
+                                    <FaPlus className="text-xl font-bold cursor-pointer" />
+                                )}
+                            </div>
+                            <div className={`${openItem === "home" ? "flex flex-col transition-all duration-300" : "hidden"} border-l my-3 mx-5 ps-5 space-y-2`}>
+                                <h1>Home Fashion 01</h1>
+                                <h1>Home Fashion 02</h1>
+                                <h1>Home Fashion 03</h1>
+                                <h1>Home Fashion 04</h1>
+                                <h1>Home Fashion 05</h1>
+                            </div>
+                        </div>
+
+                        {/* Shop Section */}
+                        <div className="border-b py-2">
+                            <div className="flex items-center justify-between" onClick={() => handleToggle("shop")}>
+                                <h1>Shop</h1>
+                                {openItem === "shop" ? (
+                                    <GrSubtract className="text-xl font-bold cursor-pointer" />
+                                ) : (
+                                    <FaPlus className="text-xl font-bold cursor-pointer" />
+                                )}
+                            </div>
+                            <div className={`${openItem === "shop" ? "flex flex-col transition-all duration-300" : "hidden"} border-l my-3 mx-5 ps-5 space-y-2`}>
+                                <h1>Shop Layouts</h1>
+                                <h1>Features</h1>
+                                <h1>Product Style</h1>
+                            </div>
+                        </div>
+
+                        {/* Products Section */}
+                        <div className="border-b py-2">
+                            <div className="flex items-center justify-between" onClick={() => handleToggle("products")}>
+                                <h1>Products</h1>
+                                {openItem === "products" ? (
+                                    <GrSubtract className="text-xl font-bold cursor-pointer" />
+                                ) : (
+                                    <FaPlus className="text-xl font-bold cursor-pointer" />
+                                )}
+                            </div>
+                            <div className={`${openItem === "products" ? "flex flex-col transition-all duration-300" : "hidden"} border-l my-3 mx-5 ps-5 space-y-2`}>
+                                <h1>Product Layouts</h1>
+                                <h1>Product Details</h1>
+                                <h1>Product Swatches</h1>
+                                <h1>Product Features</h1>
+                            </div>
+                        </div>
+
+                        {/* Pages Section */}
+                        <div className="border-b py-2">
+                            <div className="flex items-center justify-between" onClick={() => handleToggle("pages")}>
+                                <h1>Pages</h1>
+                                {openItem === "pages" ? (
+                                    <GrSubtract className="text-xl font-bold cursor-pointer" />
+                                ) : (
+                                    <FaPlus className="text-xl font-bold cursor-pointer" />
+                                )}
+                            </div>
+                            <div className={`${openItem === "pages" ? "flex flex-col transition-all duration-300" : "hidden"} border-l my-3 mx-5 ps-5 space-y-2`}>
+                                <h1>About Us</h1>
+                                <h1>Brands</h1>
+                                <h1>Contact</h1>
+                            </div>
+                        </div>
+
+                        {/* Blog Section */}
+                        <div className="border-b py-2">
+                            <div className="flex items-center justify-between" onClick={() => handleToggle("blog")}>
+                                <h1>Blog</h1>
+                                {openItem === "blog" ? (
+                                    <GrSubtract className="text-xl font-bold cursor-pointer" />
+                                ) : (
+                                    <FaPlus className="text-xl font-bold cursor-pointer" />
+                                )}
+                            </div>
+                            <div className={`${openItem === "blog" ? "flex flex-col transition-all duration-300" : "hidden"} border-l my-3 mx-5 ps-5 space-y-2`}>
+                                <h1>Grid Layout</h1>
+                                <h1>Left Sidebar</h1>
+                                <h1>Right Sidebar</h1>
+                                <h1>Blog List</h1>
+                            </div>
+                        </div>
+
+                        {/* Buy Now Section */}
+                        <div className="border-b py-2">
+                            <h1>Buy now</h1>
+                        </div>
+
+                        {/* Wishlist and Search */}
+                        <div className="flex items-center pt-5 space-x-2">
+                            <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md">
+                                <FaRegHeart />
+                                <h1>Wishlist</h1>
+                            </div>
+                            <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md">
+                                <IoSearch />
+                                <h1>Search</h1>
+                            </div>
+                        </div>
+
+                        <div className="pt-3">
+                            <h1 className="border-black border-b text-black w-fit font-semibold">Need help ?</h1>
+                            <h1 className="pt-2">Address: <span>1234 Fashion Street, Suite 567, New York, NY 10001</span></h1>
+                            <h1 className="pt-1">Email: <span className="font-semibold text-gray-700">info@fashionshop.com</span></h1>
+                            <h1 className="pt-1">Phone: <span className="font-semibold text-gray-700">(212) 555-1234</span></h1>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md w-fit my-3">
+                            <FiUser />
+                            <h1>Login</h1>
+                        </div>
+                        <div className="flex items-center pt-2 border-t">
+                            <div>
+                                <Button
+                                    id="fade-button"
+                                    aria-controls={open ? 'fade-menu' : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+                                    onClick={handleClick1}
+                                    className="topbar-color"
+                                >
+                                    India
+                                    <FaAngleDown className="topbar-angle" />
+                                </Button>
+                                <Menu
+                                    id="fade-menu"
+                                    MenuListProps={{
+                                        'aria-labelledby': 'fade-button',
+                                    }}
+                                    anchorEl={anchorEl1}
+                                    open={open1}
+                                    onClose={handleClose}
+                                    TransitionComponent={Fade}
+                                >
+                                    <MenuItem onClick={handleClose}>India</MenuItem>
+                                    <MenuItem onClick={handleClose}>United States</MenuItem>
+                                    <MenuItem onClick={handleClose}>Germany</MenuItem>
+                                    <MenuItem onClick={handleClose}>France</MenuItem>
+                                </Menu>
+                            </div>
+                            <div>
+                                <Button
+                                    id="fade-button"
+                                    aria-controls={open ? 'fade-menu' : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+                                    onClick={handleClick}
+                                    className="topbar-color"
+                                >
+                                    English
+                                    <FaAngleDown className="topbar-angle" />
+                                </Button>
+                                <Menu
+                                    id="fade-menu"
+                                    MenuListProps={{
+                                        'aria-labelledby': 'fade-button',
+                                    }}
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                    TransitionComponent={Fade}
+                                >
+                                    <MenuItem onClick={handleClose}>English</MenuItem>
+                                    <MenuItem onClick={handleClose}>Hindi</MenuItem>
+                                    <MenuItem onClick={handleClose}>Gujrati</MenuItem>
+                                </Menu>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </List>
+        </Box >
+    );
+
     return (
         <div className="flex items-center justify-between py-5 px-1 w-[95%] m-auto">
-            <div className="lg:hidden flex">
-                <CgMenuLeft className="text-black text-3xl font-semibold" />
+            <div className="lg:hidden flex cursor-pointer">
+                <div onClick={toggleDrawerMenu(true)}>
+                    <CgMenuLeft className="text-black text-3xl font-semibold" />
+                </div>
+                <Drawer anchor="left" open={isOpenMenu} onClose={toggleDrawerMenu(false)}>
+                    {drawerMenuContent}
+                </Drawer>
             </div>
             <Link to='/'>
                 <img src={`https://themesflat.co/html/ecomus/images/logo/logo.svg`} alt="Logo" />

@@ -3,6 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
+body.light {
+    background: #f2efef;
+}
+
+body.dark {
+    background: #43435e;
+}
 
 .topbar-color {
     color: black !important;
@@ -134,12 +141,60 @@
 }
 
 .add_btn {
-    color: white!important;
-    background-color: black!important;
-    padding: 12px 35px!important;
-    text-transform: capitalize!important;
+    color: white !important;
+    background-color: black !important;
+    padding: 12px 35px !important;
+    text-transform: capitalize !important;
 }
 
-.css-voecp4-MuiInputBase-input-MuiFilledInput-input{
-    background: #fff!important;
+.css-voecp4-MuiInputBase-input-MuiFilledInput-input {
+    background: #fff !important;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+    width: 1px !important;
+    color: white;
+    background-color: white;
+    height: 3px;
+}
+
+.scroll-hidden-show::-webkit-scrollbar {
+    width: 10px !important;
+    height: 5px !important;
+    background-color: #43435e;
+}
+
+.main_absolute::-webkit-scrollbar {
+    width: 0px;
+}
+
+.header_width {
+    width: calc(100% - 300px);
+}
+
+@media(max-width:1024px) {
+    .main_absolute {
+        position: fixed !important;
+        left: 0;
+        transition: all 0.8s !important;
+    }
+
+    .main_absolut_minus {
+        left: -100% !important;
+    }
+
+    .header_width {
+        width: 100%
+    }
+}
+
+td,
+th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.overflow_add{
+    overflow-x: auto!important;
 }

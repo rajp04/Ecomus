@@ -10,6 +10,16 @@ import Error from './components/Error';
 import Contact from './components/Contact';
 import Checkout from './components/Checkout';
 import AdminLogin from './components/Admin/Login';
+import Admin from './components/Admin';
+import Dashboard from './components/Admin/Dashboard';
+import Users from './components/Admin/Users';
+import Product from './components/Admin/Product';
+import AdminContact from './components/Admin/Contact';
+import AddProduct from './components/Admin/Product/Add';
+import Profile from './components/Admin/Profile';
+import Order from './components/Admin/Order';
+import Role from './components/Admin/Role';
+import AddRole from './components/Admin/Role/Add';
 
 function App() {
   return (
@@ -25,6 +35,17 @@ function App() {
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/admin/login' element={<AdminLogin />} />
+        <Route path='/admin/' element={<Admin />}>
+          <Route path='' element={<Dashboard />} />
+          <Route path='users' element={<Users />} />
+          <Route path='product' element={<Product />} />
+          <Route path='product/add' element={<AddProduct />} />
+          <Route path='profile' element={<Profile />} />
+          <Route path='order' element={<Order />} />
+          <Route path='role' element={<Role />} />
+          <Route path='role/add' element={<AddRole />} />
+          <Route path='contact' element={<AdminContact />} />
+        </Route>
         <Route path='*' element={<Error />} />
       </Routes>
     </BrowserRouter>
