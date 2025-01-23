@@ -38,7 +38,7 @@ function Admin() {
     return (
         <MyContext.Provider value={value}>
             <div className="h-screen w-screen overflow-hidden flex">
-                <div className={`bg-[#43435e] w-[300px] z-20 fixed transition-all duration-500 h-full overflow-x-auto scroll-hidden ${sidebar === true ? ' left-0' : '-left-full w-[10px]'}`}>
+                <div className={`bg-[#43435e] w-[300px] z-20 fixed transition-all duration-500 h-full overflow-x-auto scroll-hidden ${sidebar === true ? ' left-0' : '-left-full w-[0px]'}`}>
                     <Sidebar />
                 </div>
                 <div className={`w-full overflow-y-auto overflow-x-hidden bg-gray-200 ${sidebar === true ? 'lg:ps-[300px]' : ''}`}>

@@ -45,7 +45,7 @@ function Sidebar() {
                 </div>
                 <div className={`flex items-center space-x-4 text-2xl ${select === 'contact' ? 'bg-gray-500' : 'cursor-pointer'} px-4 rounded-md py-2`} onClick={() => { setSelect('contact'); navigate('/admin/contact') }}>
                     <IoIosContact />
-                    <h1>Enquiry</h1>
+                    <h1>Inquiry</h1>
                 </div>
             </div>
         </div>

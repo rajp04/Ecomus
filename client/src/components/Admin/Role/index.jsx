@@ -1,11 +1,15 @@
+import { useContext } from 'react';
 import { MdDelete, MdEditSquare } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom'
+import { MyContext } from '..';
 
 function Role() {
 
+    const { setOpenProfile } = useContext(MyContext);
     const navigate = useNavigate();
+
     return (
-        <div className="pt-[98px] overflow-y-auto px-5 pb-5">
+        <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-semibold">Role</h1>
                 <button className="bg-[#43435e] px-4 py-2 rounded-md text-white" onClick={() => navigate('add')}>Add Role</button>

@@ -20,8 +20,40 @@ import Profile from './components/Admin/Profile';
 import Order from './components/Admin/Order';
 import Role from './components/Admin/Role';
 import AddRole from './components/Admin/Role/Add';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
+
+  const [permissions, setPermissions] = useState();
+  const url = import.meta.env.VITE_SERVER_URL
+
+  useEffect(() => {
+    const fetchPermission = async () => {
+      try {
+        const token = sessionStorage.getItem('token');
+
+        const { data } = await axios.get(`${url}/admin/role`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (data?.success === 1 && Array.isArray(data.result)) {
+          // Extract permissions from each item in the array
+          const permissionsArray = data.result.map(item => item?.role?.permissions || []);
+          // Flatten the array to handle nested arrays of permissions
+          const flattenedPermissions = permissionsArray.flat();
+          setPermissions(flattenedPermissions); // Store all permissions in state
+        }
+
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+    fetchPermission()
+  }, [])
+
+  console.log(permissions);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -35,17 +67,20 @@ function App() {
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/admin/login' element={<AdminLogin />} />
-        <Route path='/admin/' element={<Admin />}>
-          <Route path='' element={<Dashboard />} />
-          <Route path='users' element={<Users />} />
-          <Route path='product' element={<Product />} />
-          <Route path='product/add' element={<AddProduct />} />
-          <Route path='profile' element={<Profile />} />
-          <Route path='order' element={<Order />} />
-          <Route path='role' element={<Role />} />
-          <Route path='role/add' element={<AddRole />} />
-          <Route path='contact' element={<AdminContact />} />
-        </Route>
+        {permissions && (
+          <Route path='/admin/' element={<Admin />}>
+            {/* {item?.dashboard?.includes('view') && <Route path='' element={<Dashboard />} />} */}
+            <Route path='users' element={<Users />} />
+            <Route path='product' element={<Product />} />
+            <Route path='product/add' element={<AddProduct />} />
+            <Route path='profile' element={<Profile />} />
+            <Route path='order' element={<Order />} />
+            <Route path='role' element={<Role />} />
+            <Route path='role/add' element={<AddRole />} />
+            <Route path='contact' element={<AdminContact />} />
+          </Route>
+        )}
+
         <Route path='*' element={<Error />} />
       </Routes>
     </BrowserRouter>

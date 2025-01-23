@@ -1,8 +1,13 @@
+import { useContext } from "react";
+import { MyContext } from "..";
 
 
 function AdminContact() {
+
+    const {setOpenProfile } = useContext(MyContext);
+
     return (
-        <div className="pt-[98px] overflow-y-auto px-5 pb-5">
+        <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
             <h1 className="text-3xl font-semibold">Users Inquiry</h1>
             <div className="bg-white mt-5 rounded-md p-5 w-full">
                 <div className="space-y-2">

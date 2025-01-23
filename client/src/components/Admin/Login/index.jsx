@@ -12,6 +12,8 @@ function AdminLogin() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
+    const url = import.meta.env.VITE_SERVER_URL
+
     const navigate = useNavigate();
 
     const handlePassword = () => {
@@ -22,8 +24,7 @@ function AdminLogin() {
         try {
             const user = { email, password }
 
-            const result = await axios.post('http://localhost:7001/api/admin/login', user);
-            console.log(result);
+            const result = await axios.post(`${url}/admin/login`, user);
             if (result?.data.success === 1) {
                 sessionStorage.setItem('token', result?.data.token);
                 navigate('/admin')

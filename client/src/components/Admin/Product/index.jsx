@@ -1,15 +1,18 @@
+import { useContext } from "react";
 import { MdDelete } from "react-icons/md";
 import { MdEditSquare } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
+import { MyContext } from "..";
 
 function Product() {
 
+    const { setOpenProfile } = useContext(MyContext);
     const navigate = useNavigate()
     return (
-        <div className="pt-[98px] overflow-y-auto px-5 pb-5">
+        <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-semibold">Product</h1>
-                <button className="bg-[#43435e] px-4 py-2 rounded-md text-white" onClick={()=> navigate('add')}>Add Product</button>
+                <button className="bg-[#43435e] px-4 py-2 rounded-md text-white" onClick={() => navigate('add')}>Add Product</button>
             </div>
             <div className="bg-white mt-5 rounded-md p-5 w-full">
                 <div className="space-y-2">

@@ -30,6 +30,7 @@ const getArcLabel = (params) => {
 };
 
 function Dashboard() {
+  
   const { setOpenProfile } = useContext(MyContext);
 
   return (
