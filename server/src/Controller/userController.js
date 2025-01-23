@@ -94,6 +94,13 @@ const GetUserById = async (req, res) => {
 
         const result = await User.findById(id);
 
+        if (!result) {
+            return res.json({
+                success: 0,
+                message: 'User not found'
+            })
+        }
+
         return res.status(201).json({
             success: 1,
             message: "Get user successfully.",

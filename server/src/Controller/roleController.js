@@ -86,4 +86,32 @@ const UpdateRole = async (req, res) => {
 };
 
 
-module.exports = { AddRole, UpdateRole, GetRole }
+const GetRoleById = async (req, res) => {
+    try {
+
+        const id = req.params.id;
+
+        const result = await Role.findById(id);
+
+        if (!result) {
+            return res.json({
+                success: 0,
+                message: 'Role not found'
+            })
+        }
+
+        return res.staus(201).json({
+            success: 1,
+            message: "Role Get Successfully.",
+            result
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: 0,
+            message: error.message,
+        });
+    }
+}
+
+
+module.exports = { AddRole, UpdateRole, GetRole, GetRoleById }

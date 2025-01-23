@@ -50,6 +50,30 @@ const GetAdmin = async (req, res) => {
 }
 
 
+const GetAdminById = async (req, res) => {
+    try {
+        const result = await Admin.findById(req.admin._id);
+
+        if (!result) {
+            return res.json({
+                success: 0,
+                message: 'Role not found'
+            })
+        }
+
+        return res.status(201).json({
+            success: 1,
+            message: "Get Admin Successfully."
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: 0,
+            message: error.message,
+        });
+    }
+}
+
+
 const Login = async (req, res) => {
     try {
         const { userName, email, password } = req.body;
@@ -116,4 +140,4 @@ const Create = async (req, res) => {
 
 
 
-module.exports = { SetDefaultAdmin, GetAdmin, Login, Create }
+module.exports = { SetDefaultAdmin, GetAdmin, Login, Create, GetAdminById }
