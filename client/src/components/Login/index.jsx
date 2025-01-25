@@ -4,12 +4,36 @@ import Footer from "../Footer"
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { FiArrowUpRight } from "react-icons/fi";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
 
 function Login() {
 
     const location = useLocation();
     const isRecover = location.hash === '#recover';
+
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [error, setError] = useState();
+
+    const navigate = useNavigate()
+
+    const handleLogin = async () => {
+        try {
+            const register = { email, password };
+            const { data } = await axios.post(`http://localhost:7001/api/users/login`, register);
+
+            if (data?.success === 1) {
+                localStorage.setItem('userToken', data?.token)
+                navigate('/')
+            } else {
+                setError(data?.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <>
@@ -80,7 +104,7 @@ function Login() {
                                 noValidate
                                 autoComplete="off"
                             >
-                                <TextField label="Email *" variant="filled" fullWidth />
+                                <TextField label="Email *" variant="filled" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
                             </Box>
                             <Box
                                 component="form"
@@ -96,9 +120,9 @@ function Login() {
                                 noValidate
                                 autoComplete="off"
                             >
-                                <TextField label="Password *" variant="filled" fullWidth />
+                                <TextField label="Password *" variant="filled" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
                             </Box>
-
+                            <h1 className="text-red-500 ps-2 font-medium">{error}</h1>
                             <div className="pb-3">
                                 <Link
                                     to="#recover"
@@ -114,6 +138,7 @@ function Login() {
                                     fontSize: '14px',
                                     padding: '12px 90px',
                                 }}
+                                onClick={handleLogin}
                             >
                                 Log in
                             </Button>

@@ -1,11 +1,37 @@
 import { Box, Button, TextField } from "@mui/material"
 import Header from "../Header"
 import Footer from "../Footer"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { FiArrowUpRight } from "react-icons/fi"
-
+import { useState } from "react"
+import axios from 'axios'
 
 function Register() {
+
+    const [firstName, setFirstName] = useState();
+    const [lastName, setLastName] = useState();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [error, setError] = useState();
+
+    const navigate = useNavigate()
+
+    const handleRegister = async () => {
+        try {
+            const register = { firstName, lastName, email, password };
+            const { data } = await axios.post(`http://localhost:7001/api/users/register`, register);
+
+            if (data?.success === 1) {
+                navigate('/login')
+            } else {
+                setError(data?.message);
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <Header />
@@ -36,7 +62,7 @@ function Register() {
                         noValidate
                         autoComplete="off"
                     >
-                        <TextField label="First name" variant="filled" fullWidth />
+                        <TextField label="First name" variant="filled" fullWidth value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                     </Box>
                     <Box
                         component="form"
@@ -52,7 +78,7 @@ function Register() {
                         noValidate
                         autoComplete="off"
                     >
-                        <TextField label="Last name" variant="filled" fullWidth />
+                        <TextField label="Last name" variant="filled" fullWidth value={lastName} onChange={(e) => setLastName(e.target.value)} />
                     </Box>
                     <Box
                         component="form"
@@ -68,8 +94,9 @@ function Register() {
                         noValidate
                         autoComplete="off"
                     >
-                        <TextField label="Email *" variant="filled" fullWidth />
+                        <TextField label="Email *" variant="filled" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
                     </Box>
+                    <h1 className="text-red-500 ps-2 font-medium">{error}</h1>
                     <Box
                         component="form"
                         sx={{
@@ -84,7 +111,7 @@ function Register() {
                         noValidate
                         autoComplete="off"
                     >
-                        <TextField label="Password *" variant="filled" fullWidth />
+                        <TextField label="Password *" variant="filled" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
                     </Box>
                     <Button
                         sx={{
@@ -95,6 +122,7 @@ function Register() {
                             width: '100%',
                             marginTop: '20px'
                         }}
+                        onClick={handleRegister}
                     >
                         Register
                     </Button>

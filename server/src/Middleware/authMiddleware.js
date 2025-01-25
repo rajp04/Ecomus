@@ -17,7 +17,7 @@ const VerifyJwt = async (req, res, next) => {
         if (!user) {
             return res.json({
                 success: 0,
-                message: "Invaild access token"
+                message: "Invaild Access Token"
             })
         }
 

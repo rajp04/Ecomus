@@ -27,7 +27,8 @@ function AdminLogin() {
             const result = await axios.post(`${url}/admin/login`, user);
             if (result?.data.success === 1) {
                 sessionStorage.setItem('token', result?.data.token);
-                navigate('/admin')
+                navigate('/admin');
+                window.location.reload();
             } else {
                 console.log(result?.data.message);
             }

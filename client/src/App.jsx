@@ -22,37 +22,32 @@ import Role from './components/Admin/Role';
 import AddRole from './components/Admin/Role/Add';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import EditRole from './components/Admin/Role/Edit';
 
 function App() {
 
   const [permissions, setPermissions] = useState();
-  const url = import.meta.env.VITE_SERVER_URL
+  // const url = import.meta.env.VITE_SERVER_URL
 
   useEffect(() => {
     const fetchPermission = async () => {
       try {
         const token = sessionStorage.getItem('token');
 
-        const { data } = await axios.get(`${url}/admin/role`, {
+        const { data } = await axios.get('http://localhost:7001/api/admin/role', {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (data?.success === 1 && Array.isArray(data.result)) {
-          // Extract permissions from each item in the array
-          const permissionsArray = data.result.map(item => item?.role?.permissions || []);
-          // Flatten the array to handle nested arrays of permissions
-          const flattenedPermissions = permissionsArray.flat();
-          setPermissions(flattenedPermissions); // Store all permissions in state
+        if (data?.success === 1) {
+          setPermissions(data?.result?.role?.permissions);
         }
 
       } catch (error) {
         console.log(error.message);
       }
-    }
-    fetchPermission()
-  }, [])
-
-  console.log(permissions);
+    };
+    fetchPermission();
+  });
 
   return (
     <BrowserRouter>
@@ -67,20 +62,22 @@ function App() {
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/admin/login' element={<AdminLogin />} />
-        {permissions && (
-          <Route path='/admin/' element={<Admin />}>
-            {/* {item?.dashboard?.includes('view') && <Route path='' element={<Dashboard />} />} */}
-            <Route path='users' element={<Users />} />
-            <Route path='product' element={<Product />} />
-            <Route path='product/add' element={<AddProduct />} />
-            <Route path='profile' element={<Profile />} />
-            <Route path='order' element={<Order />} />
-            <Route path='role' element={<Role />} />
-            <Route path='role/add' element={<AddRole />} />
-            <Route path='contact' element={<AdminContact />} />
-          </Route>
-        )}
-
+        <Route path='/admin/' element={<Admin />}>
+          {permissions && (
+            <>
+              {permissions?.dashboard?.includes('view') && <Route path='' element={<Dashboard />} />}
+              {permissions?.users?.includes('view') && <Route path='users' element={<Users />} />}
+              {permissions?.products?.includes('view') && <Route path='product' element={<Product />} />}
+              {permissions?.products?.includes('view') && <Route path='product/add' element={<AddProduct />} />}
+              {permissions?.profile?.includes('view') && <Route path='profile' element={<Profile />} />}
+              {permissions?.orders?.includes('view') && <Route path='order' element={<Order />} />}
+              {permissions?.role?.includes('view') && <Route path='role' element={<Role />} />}
+              {permissions?.role?.includes('view') && <Route path='role/add' element={<AddRole />} />}
+              {permissions?.role?.includes('view') && <Route path='role/edit' element={<EditRole />} />}
+              {permissions?.inquiry?.includes('view') && <Route path='contact' element={<AdminContact />} />}
+            </>
+          )}
+        </Route>
         <Route path='*' element={<Error />} />
       </Routes>
     </BrowserRouter>

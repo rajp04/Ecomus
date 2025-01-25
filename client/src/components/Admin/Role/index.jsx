@@ -1,12 +1,36 @@
-import { useContext } from 'react';
-import { MdDelete, MdEditSquare } from 'react-icons/md';
+import { useContext, useEffect, useState } from 'react';
+import { MdEditSquare } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom'
 import { MyContext } from '..';
+import axios from 'axios'
 
 function Role() {
 
     const { setOpenProfile } = useContext(MyContext);
+    const [roleData, setRoleData] = useState();
     const navigate = useNavigate();
+    // const url = import.meta.env.VITE_SERVER_URL
+
+    useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const token = sessionStorage.getItem('token');
+
+                const { data } = await axios.get(`http://localhost:7001/api/admin`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                if (data?.success === 1) {
+                    setRoleData(data?.result)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchRoles()
+    }, [])
+
 
     return (
         <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
@@ -26,22 +50,16 @@ function Role() {
                             <th className="bg-[#43435e] text-white">Email</th>
                             <th className="bg-[#43435e] text-white">Action</th>
                         </tr>
-                        <tr>
-                            <td>Maria Anders</td>
-                            <td>user@users.com</td>
-                            <td className='space-x-2'>
-                                <button className="bg-green-600 px-2 rounded-md py-1 text-white text-2xl"><MdEditSquare /></button>
-                                <button className="bg-red-600 px-2 rounded-md py-1 text-white text-2xl"><MdDelete /></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Francisco Chang</td>
-                            <td>example@example.com</td>
-                            <td className='space-x-2'>
-                                <button className="bg-green-600 px-2 rounded-md py-1 text-white text-2xl"><MdEditSquare /></button>
-                                <button className="bg-red-600 px-2 rounded-md py-1 text-white text-2xl"><MdDelete /></button>
-                            </td>
-                        </tr>
+                        {roleData && roleData.map((item, index) => (
+                            <tr key={index}>
+                                <td>{item.role?.name}</td>
+                                <td>{item.email}</td>
+                                <td className='space-x-2'>
+                                    <button className="bg-green-600 px-2 rounded-md py-1 text-white text-2xl" onClick={() => navigate('edit', { state: item })}><MdEditSquare /></button>
+                                    {/* <button className="bg-red-600 px-2 rounded-md py-1 text-white text-2xl"><MdDelete /></button> */}
+                                </td>
+                            </tr>
+                        ))}
                     </table>
                 </div>
             </div>

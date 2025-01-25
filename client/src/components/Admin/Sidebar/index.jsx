@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { MyContext } from '..';
 import Logo from '../../../assets/logo.svg'
 import { FaArrowLeft } from "react-icons/fa";
@@ -9,12 +9,36 @@ import { useNavigate } from 'react-router-dom';
 import { IoIosContact } from "react-icons/io";
 import { TbShoppingCartCopy } from "react-icons/tb";
 import { LuUserRoundCheck } from "react-icons/lu";
+import axios from 'axios'
 
 function Sidebar() {
 
     const [select, setSelect] = useState('dashboard')
+    const [permissions, setPermissions] = useState()
     const { setSidebar } = useContext(MyContext)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const fetchPermission = async () => {
+            try {
+                const token = sessionStorage.getItem('token');
+
+                const { data } = await axios.get('http://localhost:7001/api/admin/role', {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                
+
+                if (data?.success === 1) {
+                    setPermissions(data?.result?.role?.permissions);
+                }
+
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+        fetchPermission();
+    },[]);
+
 
     return (
         <div className="text-white px-4">
@@ -25,7 +49,7 @@ function Sidebar() {
             <div className='pt-3 space-y-2'>
                 <div className={`flex items-center space-x-4 text-2xl ${select === 'dashboard' ? 'bg-gray-500' : 'cursor-pointer'} px-4 rounded-md py-2`} onClick={() => { setSelect('dashboard'); navigate('/admin') }}>
                     <RxDashboard />
-                    <h1>Dashboard</h1>
+                    <h1>Dashboard{permissions?.result?.userName}</h1>
                 </div>
                 <div className={`flex items-center space-x-4 text-2xl ${select === 'users' ? 'bg-gray-500' : 'cursor-pointer'} px-4 rounded-md py-2`} onClick={() => { setSelect('users'); navigate('/admin/users') }}>
                     <FaRegUser />

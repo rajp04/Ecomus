@@ -17,8 +17,9 @@ const Register = async (req, res) => {
 
         return res.status(201).json({
             success: 1,
-            message: "User Created Successfully."
-        })
+            message: "User Created Successfully.",
+            result
+        });
     } catch (error) {
         return res.json({
             success: 0,
@@ -45,7 +46,7 @@ const Login = async (req, res) => {
         if (!isPasswordValid) {
             return res.json({
                 success: 0,
-                message: "Invalid user credentials",
+                message: "Invalid user credentials.",
             });
         }
 
@@ -117,9 +118,9 @@ const GetUserById = async (req, res) => {
 
 const Delete = async (req, res) => {
     try {
-        const id = req.user?._id;
+        const id = req.params.id;
 
-        const result = await User.findByIdAndDelete(id);
+        await User.findByIdAndDelete(id);
 
         return res.status(201).json({
             success: 1,

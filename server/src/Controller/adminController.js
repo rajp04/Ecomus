@@ -2,9 +2,10 @@ const Admin = require('../Model/adminModel.js');
 const Role = require('../Model/roleModel.js')
 const bcrypt = require('bcrypt')
 
+
 const SetDefaultAdmin = async (req, res) => {
     try {
-        const Defaultrole = await Role.findOne({ name: "Admin" })
+        let Defaultrole = await Role.findOne({ name: "Admin" });
         if (!Defaultrole) {
             Defaultrole = await Role.create({
                 name: 'Admin',
@@ -26,9 +27,10 @@ const SetDefaultAdmin = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message);
+        console.log('Error in SetDefaultAdmin:', error.message);
+        res.status(500).send('Something went wrong.');
     }
-}
+};
 
 
 const GetAdmin = async (req, res) => {
@@ -52,7 +54,7 @@ const GetAdmin = async (req, res) => {
 
 const GetAdminById = async (req, res) => {
     try {
-        const result = await Admin.findById(req.admin._id);
+        const result = await Admin.findById(req.admin._id).populate('role');
 
         if (!result) {
             return res.json({
@@ -63,7 +65,8 @@ const GetAdminById = async (req, res) => {
 
         return res.status(201).json({
             success: 1,
-            message: "Get Admin Successfully."
+            message: "Get Admin Successfully.",
+            result
         })
     } catch (error) {
         return res.status(500).json({
@@ -76,9 +79,9 @@ const GetAdminById = async (req, res) => {
 
 const Login = async (req, res) => {
     try {
-        const { userName, email, password } = req.body;
+        const { email, password } = req.body;
 
-        const admin = await Admin.findOne({ $or: [{ userName }, { email }] }).populate('role');
+        const admin = await Admin.findOne(email).populate('role');
         if (!admin) {
             return res.json({
                 success: 0,
@@ -139,5 +142,49 @@ const Create = async (req, res) => {
 };
 
 
+const Update = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userName, email, password } = req.body;
 
-module.exports = { SetDefaultAdmin, GetAdmin, Login, Create, GetAdminById }
+        const admin = await Admin.findById(id);
+
+        if (!admin) {
+            return res.json({
+                success: 0,
+                message: "Admin not found."
+            });
+        }
+
+        if (email && email !== admin.email) {
+            const existingAdmin = await Admin.findOne({ email });
+            if (existingAdmin) {
+                return res.json({
+                    success: 0,
+                    message: "Admin with this email already exists."
+                });
+            }
+        }
+
+        admin.userName = userName || admin.userName;
+        admin.email = email || admin.email;
+        admin.password = password || admin.password;
+
+        const updatedAdmin = await admin.save();
+
+        return res.status(200).json({
+            success: 1,
+            message: "Admin Updated Successfully.",
+            result: updatedAdmin
+        });
+
+    } catch (error) {
+        return res.json({
+            success: 0,
+            message: error.message
+        });
+    }
+};
+
+
+module.exports = { SetDefaultAdmin, GetAdmin, Login, Create, GetAdminById, Update }
