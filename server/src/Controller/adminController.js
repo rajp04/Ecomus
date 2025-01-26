@@ -17,11 +17,10 @@ const SetDefaultAdmin = async (req, res) => {
 
         const defaultAdmin = await Admin.findOne({ email: 'admin@ecomus.com' });
         if (!defaultAdmin) {
-            const hashedPassword = await bcrypt.hash('admin123', 10);
             await Admin.create({
                 userName: 'admin_ecomus',
                 email: 'admin@ecomus.com',
-                password: hashedPassword,
+                password: 'admin123',
                 role: Defaultrole._id
             });
         }
@@ -81,7 +80,7 @@ const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const admin = await Admin.findOne(email).populate('role');
+        const admin = await Admin.findOne({ email }).populate('role');
         if (!admin) {
             return res.json({
                 success: 0,

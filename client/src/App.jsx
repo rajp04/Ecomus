@@ -27,14 +27,14 @@ import EditRole from './components/Admin/Role/Edit';
 function App() {
 
   const [permissions, setPermissions] = useState();
-  // const url = import.meta.env.VITE_SERVER_URL
+  const url = import.meta.env.VITE_SERVER_URL
 
   useEffect(() => {
     const fetchPermission = async () => {
       try {
         const token = sessionStorage.getItem('token');
 
-        const { data } = await axios.get('http://localhost:7001/api/admin/role', {
+        const { data } = await axios.get(`${url}/admin/role`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

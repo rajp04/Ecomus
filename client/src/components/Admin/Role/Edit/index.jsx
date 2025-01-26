@@ -9,7 +9,7 @@ function EditRole() {
 
     const { setOpenProfile } = useContext(MyContext);
     const navigate = useNavigate();
-
+    const url = import.meta.env.VITE_SERVER_URL
 
     const [name, setName] = useState(state?.role?.name || "");
     const [email, setEmail] = useState(state?.email || "");
@@ -73,7 +73,7 @@ function EditRole() {
 
             // Update role
             const roleResponse = await axios.put(
-                `http://localhost:7001/api/role/update/${state?.role?._id}`,
+                `${url}/role/update/${state?.role?._id}`,
                 payload,
                 { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } }
             );
@@ -86,7 +86,7 @@ function EditRole() {
             };
 
             const adminResponse = await axios.put(
-                `http://localhost:7001/api/admin/update/${state?._id}`,
+                `${url}/admin/update/${state?._id}`,
                 adminPayload,
                 { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } }
             );

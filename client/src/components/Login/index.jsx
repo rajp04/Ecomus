@@ -12,7 +12,7 @@ function Login() {
 
     const location = useLocation();
     const isRecover = location.hash === '#recover';
-
+    const url = import.meta.env.VITE_SERVER_URL
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [error, setError] = useState();
@@ -22,7 +22,7 @@ function Login() {
     const handleLogin = async () => {
         try {
             const register = { email, password };
-            const { data } = await axios.post(`http://localhost:7001/api/users/login`, register);
+            const { data } = await axios.post(`${url}/users/login`, register);
 
             if (data?.success === 1) {
                 localStorage.setItem('userToken', data?.token)

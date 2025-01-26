@@ -13,13 +13,13 @@ function Register() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [error, setError] = useState();
-
+    const url = import.meta.env.VITE_SERVER_URL
     const navigate = useNavigate()
 
     const handleRegister = async () => {
         try {
             const register = { firstName, lastName, email, password };
-            const { data } = await axios.post(`http://localhost:7001/api/users/register`, register);
+            const { data } = await axios.post(`${url}/users/register`, register);
 
             if (data?.success === 1) {
                 navigate('/login')

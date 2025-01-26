@@ -9,14 +9,14 @@ function Role() {
     const { setOpenProfile } = useContext(MyContext);
     const [roleData, setRoleData] = useState();
     const navigate = useNavigate();
-    // const url = import.meta.env.VITE_SERVER_URL
+    const url = import.meta.env.VITE_SERVER_URL
 
     useEffect(() => {
         const fetchRoles = async () => {
             try {
                 const token = sessionStorage.getItem('token');
 
-                const { data } = await axios.get(`http://localhost:7001/api/admin`, {
+                const { data } = await axios.get(`${url}/admin`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

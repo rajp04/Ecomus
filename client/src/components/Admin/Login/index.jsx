@@ -25,6 +25,8 @@ function AdminLogin() {
             const user = { email, password }
 
             const result = await axios.post(`${url}/admin/login`, user);
+            console.log(result);
+
             if (result?.data.success === 1) {
                 sessionStorage.setItem('token', result?.data.token);
                 navigate('/admin');
