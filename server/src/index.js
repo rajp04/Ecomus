@@ -12,6 +12,7 @@ const Role = require('./Routes/roleRouter');
 const Product = require('./Routes/productRouter');
 const Inquiry = require('./Routes/inquiryRouter');
 const { SetDefaultAdmin } = require('./Controller/adminController');
+const Cart = require('./Routes/cartRouter');
 
 app.use(cors())
 app.use(express.json({ limit: "16kb" }))
@@ -24,6 +25,7 @@ app.use('/api/admin', Admin);
 app.use('/api/role', Role);
 app.use('/api/product', Product);
 app.use('/api/inquiry', Inquiry);
+app.use('/api/cart', Cart);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

@@ -21,8 +21,6 @@ function Users() {
                 const { data } = await axios.get(`${url}/admin/role`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                console.log(data);
-
 
                 if (data?.success === 1) {
                     setPermissions(data?.result?.role?.permissions);

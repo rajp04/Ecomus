@@ -6,26 +6,13 @@ const router = express.Router()
 
 router.route('/register').post(Register)
 router.route('/login').post(Login)
-// router.route('/').get(VerifyJwt, AdminAuthJwt, GetUsers)
+router.route('/').get(AdminAuthJwt, GetUsers)
 router.route('/user').get(VerifyJwt, GetUserById)
-router.route('/delete/:id').delete(Delete)
+router.route('/delete/:id').delete(VerifyJwt, Delete)
+router.route('/admin/delete/:id').delete(AdminAuthJwt, Delete)
 router.route('/update').put(VerifyJwt, Update)
 router.route('/password').put(ForgetPassword)
 router.route('/subscribe').post(Subscribe)
-router.route('/').get((req, res, next) => {
-    AdminAuthJwt(req, res, (verifyErr) => {
-        if (verifyErr) {
-            VerifyJwt(req, res, (adminErr) => {
-                if (adminErr) {
-                    return res.status(403).json({ message: 'Unauthorized access' });
-                } else {
-                    return GetUsers(req, res);
-                }
-            });
-        } else {
-            return GetUsers(req, res);
-        }
-    });
-});
+
 
 module.exports = router;

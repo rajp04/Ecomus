@@ -7,7 +7,6 @@ function ViewProduct() {
 
     const { setOpenProfile } = useContext(MyContext);
     const { state } = useLocation();
-    console.log(state);
 
     return (
         <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)

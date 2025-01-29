@@ -19,19 +19,19 @@
 
 // export default EditProduct
 
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { MyContext } from "../..";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function EditProduct() {
     const { setOpenProfile } = useContext(MyContext);
     const [error, setError] = useState();
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { state } = useLocation();
 
     const [formData, setFormData] = useState({
-        name: "",
-        description: "",
+        name: state.name,
+        description: state.description,
         category: "",
         brand: "",
         sku: "",
@@ -42,32 +42,12 @@ function EditProduct() {
     });
 
     const [variant, setVariant] = useState({
-        color: "",
+        color: state.variants.map(item => item.color),
         size: [],
-        price: "",
-        discount: "",
-        stock: "",
+        price: state.variants.map(item => item.price),
+        discount: state.variants.map(item => item.discount),
+        stock: state.variants.map(item => item.stock),
     });
-
-    useEffect(() => {
-        async function fetchProduct() {
-            try {
-                const response = await fetch(`http://localhost:7001/api/product/${id}`);
-                const result = await response.json();
-                console.log(result);
-                
-                if (result.success) {
-                    setFormData(result.data);
-                } else {
-                    setError("Failed to fetch product details.");
-                }
-            } catch (error) {
-                setError("Error fetching product details.", error);
-            }
-        }
-
-        fetchProduct();
-    }, [id]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -123,7 +103,7 @@ function EditProduct() {
         }
 
         try {
-            const response = await fetch(`http://localhost:7001/api/product/update/${id}`, {
+            const response = await fetch(`http://localhost:7001/api/product/update/${state._id}`, {
                 method: "PUT",
                 body: formDataToSend,
             });

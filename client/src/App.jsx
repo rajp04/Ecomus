@@ -71,7 +71,7 @@ function App() {
               {permissions?.users?.includes('view') && <Route path='users' element={<Users />} />}
               {permissions?.products?.includes('view') && <Route path='product' element={<Product />} />}
               {permissions?.products?.includes('view') && <Route path='product/add' element={<AddProduct />} />}
-              {permissions?.products?.includes('view') && <Route path='product/edit/:id' element={<EditProduct />} />}
+              {permissions?.products?.includes('view') && <Route path='product/edit' element={<EditProduct />} />}
               {permissions?.products?.includes('view') && <Route path='product/view' element={<ViewProduct />} />}
               {permissions?.profile?.includes('view') && <Route path='profile' element={<Profile />} />}
               {permissions?.orders?.includes('view') && <Route path='order' element={<Order />} />}

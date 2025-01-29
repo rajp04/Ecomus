@@ -12,11 +12,18 @@ function Product() {
     const navigate = useNavigate()
     const [error, setError] = useState();
     const [productData, setProductData] = useState();
+    const url = import.meta.env.VITE_SERVER_URL
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:7001/api/product`);
+                const token = sessionStorage.getItem('token');
+
+                const { data } = await axios.get(`http://localhost:7001/api/product/admin`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                console.log(data);
+
                 if (data?.success === 1) {
                     setProductData(data?.data)
                 }
@@ -57,6 +64,7 @@ function Product() {
                             <th className="bg-[#43435e] text-white">Brand</th>
                             <th className="bg-[#43435e] text-white">Price</th>
                             <th className="bg-[#43435e] text-white">Stock</th>
+                            <th className="bg-[#43435e] text-white">Size</th>
                             <th className="bg-[#43435e] text-white">Action</th>
                         </tr>
                         {productData && productData.map((item, index) => (
@@ -65,11 +73,12 @@ function Product() {
                                 <td>{item.description.length > 40 ? `${item.description.slice(0, 40)}...` : item.description}</td>
                                 <td>{item.category}</td>
                                 <td>{item.brand}</td>
-                                <td>{item.variants[0].price}</td>
-                                <td>{item.variants[0].stock}</td>
+                                <td>{item.variants.map(item => item.price).join(', ')}</td>
+                                <td>{item.variants.map(item => item.stock).join(', ')}</td>
+                                <td>{item.variants.map(item => item.size).join(' || ')}</td>
                                 <td className="space-x-2">
                                     <button className="bg-blue-600 px-2 rounded-md py-1 text-white text-2xl" onClick={() => navigate('view', { state: item })}><LuView /></button>
-                                    <button className="bg-green-600 px-2 rounded-md py-1 text-white text-2xl" onClick={() => navigate(`edit/${item._id}`)}><MdEditSquare /></button>
+                                    <button className="bg-green-600 px-2 rounded-md py-1 text-white text-2xl" onClick={() => navigate(`edit`, { state: item })}><MdEditSquare /></button>
                                     <button className="bg-red-600 px-2 rounded-md py-1 text-white text-2xl" onClick={() => handleDelete(item._id)}><MdDelete /></button>
                                 </td>
                             </tr>
