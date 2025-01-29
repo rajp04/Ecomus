@@ -120,7 +120,7 @@ function Login() {
                                 noValidate
                                 autoComplete="off"
                             >
-                                <TextField label="Password *" variant="filled" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <TextField label="Password *" type='password' variant="filled" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
                             </Box>
                             <h1 className="text-red-500 ps-2 font-medium">{error}</h1>
                             <div className="pb-3">

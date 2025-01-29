@@ -1,12 +1,33 @@
-import { useContext, useState } from "react";
+// import { useContext, useState } from "react";
+// import { MyContext } from "../..";
+// import { useNavigate } from "react-router-dom";
+
+
+// function EditProduct() {
+
+//     const { setOpenProfile } = useContext(MyContext);
+//     const navigate = useNavigate()
+//     const [error, setError] = useState();
+
+//     return (
+//         <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
+//             <h1 className="text-3xl font-semibold">Edit Product</h1>
+//             <h1 className="text-red-500 font-semibold"></h1>
+//         </div>
+//     )
+// }
+
+// export default EditProduct
+
+import { useContext, useState, useEffect } from "react";
 import { MyContext } from "../..";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function AddProduct() {
-
+function EditProduct() {
     const { setOpenProfile } = useContext(MyContext);
     const [error, setError] = useState();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { id } = useParams();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -27,6 +48,26 @@ function AddProduct() {
         discount: "",
         stock: "",
     });
+
+    useEffect(() => {
+        async function fetchProduct() {
+            try {
+                const response = await fetch(`http://localhost:7001/api/product/${id}`);
+                const result = await response.json();
+                console.log(result);
+                
+                if (result.success) {
+                    setFormData(result.data);
+                } else {
+                    setError("Failed to fetch product details.");
+                }
+            } catch (error) {
+                setError("Error fetching product details.", error);
+            }
+        }
+
+        fetchProduct();
+    }, [id]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -82,8 +123,8 @@ function AddProduct() {
         }
 
         try {
-            const response = await fetch("http://localhost:7001/api/product/create", {
-                method: "POST",
+            const response = await fetch(`http://localhost:7001/api/product/update/${id}`, {
+                method: "PUT",
                 body: formDataToSend,
             });
 
@@ -92,10 +133,10 @@ function AddProduct() {
             if (result?.success === 1) {
                 navigate('/admin/product');
             } else {
-                setError(result?.message)
+                setError(result?.message);
             }
         } catch (error) {
-            setError("Error adding product:", error);
+            setError("Error updating product:", error);
         }
     };
 
@@ -104,33 +145,33 @@ function AddProduct() {
             className="pt-[98px] overflow-y-auto px-5 pb-5"
             onClick={() => setOpenProfile(false)}
         >
-            <h1 className="text-3xl font-semibold">Add Product</h1>
+            <h1 className="text-3xl font-semibold">Edit Product</h1>
             <h1 className="text-red-500 font-medium">{error}</h1>
             <form
                 className="bg-white p-5 mt-5 rounded-md grid sm:grid-cols-2 grid-cols-1 gap-5"
                 onSubmit={handleSubmit}
             >
-                {["name", "description", "category", "brand", "sku", "material"].map(
-                    (field) => (
-                        <div key={field} className="col-span-1 space-y-2">
-                            <label
-                                htmlFor={field}
-                                className="font-semibold text-xl opacity-80"
-                            >
-                                {field.charAt(0).toUpperCase() + field.slice(1)}:
-                            </label>
-                            <input
-                                type="text"
-                                id={field}
-                                name={field}
-                                value={formData[field]}
-                                onChange={handleInputChange}
-                                className="outline-none border rounded-md w-full px-4 text-lg font-medium py-2"
-                                placeholder={`Enter ${field}`}
-                            />
-                        </div>
-                    )
-                )}
+                {[
+                    "name", "description", "category", "brand", "sku", "material"
+                ].map((field) => (
+                    <div key={field} className="col-span-1 space-y-2">
+                        <label
+                            htmlFor={field}
+                            className="font-semibold text-xl opacity-80"
+                        >
+                            {field.charAt(0).toUpperCase() + field.slice(1)}:
+                        </label>
+                        <input
+                            type="text"
+                            id={field}
+                            name={field}
+                            value={formData[field]}
+                            onChange={handleInputChange}
+                            className="outline-none border rounded-md w-full px-4 text-lg font-medium py-2"
+                            placeholder={`Enter ${field}`}
+                        />
+                    </div>
+                ))}
 
                 {/** Image Upload */}
                 <div className="col-span-2 space-y-2">
@@ -147,7 +188,9 @@ function AddProduct() {
                 <div className="col-span-2 space-y-2">
                     <h2 className="font-semibold text-xl opacity-80">Variants:</h2>
                     <div className="grid sm:grid-cols-3 grid-cols-2 gap-4">
-                        {["color", "size", "price", "discount", "stock"].map((field) => (
+                        {[
+                            "color", "size", "price", "discount", "stock"
+                        ].map((field) => (
                             <input
                                 key={field}
                                 type={
@@ -186,4 +229,4 @@ function AddProduct() {
     );
 }
 
-export default AddProduct;
+export default EditProduct;

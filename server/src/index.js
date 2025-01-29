@@ -7,9 +7,10 @@ const app = express()
 const port = process.env.PORT || 1001
 const Database = require('./Database/db');
 const Users = require('./Routes/userRouter');
-const Admin = require('./Routes/adminRouter');
+const Admin = require('./Routes/adminRouter');  
 const Role = require('./Routes/roleRouter');
 const Product = require('./Routes/productRouter');
+const Inquiry = require('./Routes/inquiryRouter');
 const { SetDefaultAdmin } = require('./Controller/adminController');
 
 app.use(cors())
@@ -22,6 +23,7 @@ app.use('/api/users', Users);
 app.use('/api/admin', Admin);
 app.use('/api/role', Role);
 app.use('/api/product', Product);
+app.use('/api/inquiry', Inquiry);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

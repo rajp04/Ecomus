@@ -1,8 +1,36 @@
+import { useState } from "react";
 import Footer from "../Footer"
 import Header from "../Header"
 import { FaFacebookF, FaXTwitter, FaInstagram, FaTiktok, FaSquarePinterest } from "react-icons/fa6";
+import axios from 'axios'
+
 
 function Contact() {
+
+    const [name, setName] = useState()
+    const [email, setEmail] = useState()
+    const [message, setMessage] = useState()
+    const [error, setError] = useState()
+    // const url = import.meta.env.VITE_SERVER_URL
+
+    const handleSubmit = async () => {
+        try {
+            const user = { name, email, message }
+
+            const { data } = await axios.post(`http://localhost:7001/api/inquiry/create`, user);
+            if (data?.success === 1) {
+                setName('')
+                setMessage('')
+                setEmail('')
+            } else (
+                setError(data?.message)
+            )
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <Header />
@@ -53,11 +81,12 @@ function Contact() {
                         <h1 className="text-3xl">Get in Touch</h1>
                         <p className="opacity-80">If you’ve got great products your making or looking to work with us then drop us a line.</p>
                         <div className="flex xs:flex-row flex-col items-center w-full xs:space-x-4 xs:space-y-0 space-y-5">
-                            <input type="text" placeholder="Name *" className="w-full border-gray-300 outline-none px-4 py-3 opacity-60 border rounded-md" />
-                            <input type="text" placeholder="Email *" className="w-full border-gray-300 outline-none px-4 py-3 opacity-60 border rounded-md" />
+                            <input type="text" placeholder="Name *" className="w-full border-gray-300 outline-none px-4 py-3 opacity-60 border rounded-md" value={name} onChange={(e) => setName(e.target.value)} />
+                            <input type="text" placeholder="Email *" className="w-full border-gray-300 outline-none px-4 py-3 opacity-60 border rounded-md" value={email} onChange={(e) => setEmail(e.target.value)} />
                         </div>
-                        <textarea name="" id="" rows={5} placeholder="Message" className="w-full border-gray-300 outline-none px-4 py-3 opacity-60 border rounded-md"></textarea>
-                        <button className="bg-black text-white rounded-md w-full text-center py-3">Send</button>
+                        <textarea name="" id="" rows={5} placeholder="Message" className="w-full border-gray-300 outline-none px-4 py-3 opacity-60 border rounded-md" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
+                        <h1 className="text-red-500 font-medium">{error}</h1>
+                        <button className="bg-black text-white rounded-md w-full text-center py-3" onClick={handleSubmit}>Send</button>
                     </div>
                 </div>
             </div>

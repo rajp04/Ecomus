@@ -1,14 +1,39 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MyContext } from "..";
-
+import axios from "axios";
 
 function AdminContact() {
 
-    const {setOpenProfile } = useContext(MyContext);
+    const { setOpenProfile } = useContext(MyContext);
+    const [data, setData] = useState()
+    const [error, setError] = useState()
+
+    useEffect(() => {
+        const fetchInquiry = async () => {
+            try {
+                const token = sessionStorage.getItem('token');
+
+                const { data } = await axios.get(`http://localhost:7001/api/inquiry`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                if (data?.success === 1) {
+                    setData(data?.result)
+                } else {
+                    setError(data?.message)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchInquiry()
+    }, [])
 
     return (
         <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
             <h1 className="text-3xl font-semibold">Users Inquiry</h1>
+            <h1 className="text-red-500 font-medium">{error}</h1>
             <div className="bg-white mt-5 rounded-md p-5 w-full">
                 <div className="space-y-2">
                     <h1 className="text-xl font-semibold">Search</h1>
@@ -21,17 +46,13 @@ function AdminContact() {
                             <th className="bg-[#43435e] text-white">Email</th>
                             <th className="bg-[#43435e] text-white">Message</th>
                         </tr>
-                        <tr>
-                            <td>Alfreds Futterkiste</td>
-                            <td>Maria Anders</td>
-                            <td>user@users.com</td>
-                            
-                        </tr>
-                        <tr>
-                            <td>Centro comercial Moctezuma</td>
-                            <td>Francisco Chang</td>
-                            <td>example@example.com</td>
-                        </tr>
+                        {data?.map((item, index) => (
+                            <tr key={index}>
+                                <td>{item.name}</td>
+                                <td>{item.email}</td>
+                                <td>{item.message}</td>
+                            </tr>
+                        ))}
                     </table>
                 </div>
             </div>

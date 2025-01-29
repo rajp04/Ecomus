@@ -11,6 +11,7 @@ function AdminLogin() {
     const [passwordHide, setPasswordHide] = useState(false);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [error, setError] = useState();
 
     const url = import.meta.env.VITE_SERVER_URL
 
@@ -32,6 +33,7 @@ function AdminLogin() {
                 navigate('/admin');
                 window.location.reload();
             } else {
+                setError(result?.data.message)
                 console.log(result?.data.message);
             }
         } catch (error) {
@@ -63,6 +65,7 @@ function AdminLogin() {
                         <input type={`${passwordHide === true ? "text" : "password"}`} className="bg-transparent outline-none border-b-2 pe-9 py-2 border-white" value={password} onChange={(e) => setPassword(e.target.value)} />
                         <IoEye className="absolute text-[#27e7ef] right-2 text-2xl top-[54px] cursor-pointer" onClick={handlePassword} />
                     </div>
+                    <h1 className="text-red-500 font-medium">{error}</h1>
                     <div className="flex items-center justify-center rounded-md bg-[#27e7ef] mt-14 cursor-pointer" onClick={handleSubmit}>
                         <button className="text-center py-2 text-gray-800 font-semibold text-2xl">Sign in</button>
                     </div>

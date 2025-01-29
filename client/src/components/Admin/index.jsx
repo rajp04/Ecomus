@@ -7,7 +7,7 @@ const MyContext = createContext();
 
 function Admin() {
 
-    const [sidebar, setSidebar] = useState(null);
+    const [sidebar, setSidebar] = useState();
     const [openProfile, setOpenProfile] = useState(false);
     const navigate = useNavigate()
 

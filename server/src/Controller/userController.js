@@ -181,4 +181,24 @@ const ForgetPassword = async (req, res) => {
 }
 
 
-module.exports = { Register, Login, GetUsers, GetUserById, Delete, Update, ForgetPassword }
+const Subscribe = async (req, res) => {
+    try {
+
+        const { email } = req.body;
+
+        const result = await User.create({ email })
+
+        return res.json({
+            success: 1,
+            message: "Email Subscribe.",
+            result
+        })
+    } catch (error) {
+        return res.json({
+            success: 0,
+            message: error.message
+        })
+    }
+}
+
+module.exports = { Register, Login, GetUsers, GetUserById, Delete, Update, ForgetPassword, Subscribe }

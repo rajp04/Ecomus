@@ -111,7 +111,7 @@ function Register() {
                         noValidate
                         autoComplete="off"
                     >
-                        <TextField label="Password *" variant="filled" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
+                        <TextField label="Password *" type="password" variant="filled" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
                     </Box>
                     <Button
                         sx={{

@@ -30,7 +30,7 @@ const getArcLabel = (params) => {
 };
 
 function Dashboard() {
-  
+
   const { setOpenProfile } = useContext(MyContext);
 
   return (
@@ -110,7 +110,7 @@ function Dashboard() {
           <h1 className="font-bold text-xl p-5">Total Orders</h1>
           <BarChart
             xAxis={[{ scaleType: 'band', data: ['Mar', 'Jun', 'Sep', 'Dec'] }]}
-            series={[{ data: [30,50,80,60] }]}
+            series={[{ data: [30, 50, 80, 60] }]}
             height={300}
           />
         </div>

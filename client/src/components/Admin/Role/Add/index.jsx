@@ -14,6 +14,8 @@ function AddRole() {
     const [email, setEmail] = useState();
     const [userName, setUserName] = useState();
     const [password, setPassword] = useState();
+    const [error, setError] = useState();
+
     const [permissions, setPermissions] = useState({
         dashboard: { all: false, view: false, edit: false, add: false, delete: false },
         users: { all: false, view: false, edit: false, add: false, delete: false },
@@ -86,6 +88,8 @@ function AddRole() {
                 if (roleResponse?.data?.success === 1) {
                     navigate('/admin/role')
                 }
+            } else {
+                setError(adminResponse?.data.message)
             }
 
         } catch (error) {
@@ -96,6 +100,7 @@ function AddRole() {
     return (
         <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
             <h1 className="text-3xl font-semibold">Add New Role</h1>
+            <h1 className="text-red-500 font-medium">{error}</h1>
             <div className="bg-white p-5 mt-5 rounded-md space-y-4">
                 <div className="space-y-2">
                     <h1 className="text-2xl font-semibold pb-3">Permissions:-</h1>

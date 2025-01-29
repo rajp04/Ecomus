@@ -23,10 +23,12 @@ import AddRole from './components/Admin/Role/Add';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import EditRole from './components/Admin/Role/Edit';
+import ViewProduct from './components/Admin/Product/View';
+import EditProduct from './components/Admin/Product/Edit';
 
 function App() {
 
-  const [permissions, setPermissions] = useState();
+  const [permissions, setPermissions] = useState('');
   const url = import.meta.env.VITE_SERVER_URL
 
   useEffect(() => {
@@ -69,6 +71,8 @@ function App() {
               {permissions?.users?.includes('view') && <Route path='users' element={<Users />} />}
               {permissions?.products?.includes('view') && <Route path='product' element={<Product />} />}
               {permissions?.products?.includes('view') && <Route path='product/add' element={<AddProduct />} />}
+              {permissions?.products?.includes('view') && <Route path='product/edit/:id' element={<EditProduct />} />}
+              {permissions?.products?.includes('view') && <Route path='product/view' element={<ViewProduct />} />}
               {permissions?.profile?.includes('view') && <Route path='profile' element={<Profile />} />}
               {permissions?.orders?.includes('view') && <Route path='order' element={<Order />} />}
               {permissions?.role?.includes('view') && <Route path='role' element={<Role />} />}

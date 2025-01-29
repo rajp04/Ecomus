@@ -5,9 +5,11 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import React from "react";
 import Fade from '@mui/material/Fade';
 import { FaPlus } from "react-icons/fa6";
+import axios from 'axios'
 
 function Footer() {
 
+    const [email, setEmail] = React.useState()
     const [openPlus1, setOpenPlus1] = React.useState(false)
     const [openPlus2, setOpenPlus2] = React.useState(false)
     const [openPlus3, setOpenPlus3] = React.useState(false)
@@ -34,6 +36,13 @@ function Footer() {
     }
     const handleOpen3 = () => {
         setOpenPlus3(!openPlus3)
+    }
+
+    const handleSubscribe = async () => {
+        const { data } = await axios.post(`http://localhost:7001/api/users/subscribe`, email);
+        if (data?.success === 1) {
+            setEmail('')
+        }
     }
 
     return (
@@ -106,7 +115,7 @@ function Footer() {
                         } space-y-2`}>
                         <h1 className="pt-[13px] pb-8">Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!</h1>
                         <div className="relative">
-                            <input type="text" className="w-full outline-none rounded-md border border-gray-300 py-4 ps-4 pe-36" placeholder="Enter your email..." />
+                            <input type="text" className="w-full outline-none rounded-md border border-gray-300 py-4 ps-4 pe-36" placeholder="Enter your email..." value={email} onChange={(e) => setEmail(e.target.value)} />
                             <Button
                                 sx={{
                                     bgcolor: 'black',
@@ -117,6 +126,7 @@ function Footer() {
                                     top: '4px',
                                     right: '4px'
                                 }}
+                                onClick={handleSubscribe}
                             >
                                 Subscribe
                             </Button>
