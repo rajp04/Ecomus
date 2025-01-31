@@ -16,8 +16,10 @@ const Create = async (req, res) => {
             for (const file of req.files) {
                 const result = await uploadOnCloudinary(file.buffer, file.originalname);
                 productImages.push(result.secure_url);
+                console.log(result)
             }
         }
+        console.log(productImages)
 
         const product = new Product({
             name,
@@ -31,6 +33,7 @@ const Create = async (req, res) => {
             images: productImages,
             variants,
         });
+        console.log(product)
 
         const savedProduct = await product.save();
 

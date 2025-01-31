@@ -1,12 +1,14 @@
 import { useContext, useState } from "react";
 import { MyContext } from "../..";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function AddProduct() {
 
     const { setOpenProfile } = useContext(MyContext);
     const [error, setError] = useState();
     const navigate = useNavigate()
+    const url = import.meta.env.VITE_SERVER_URL
 
     const [formData, setFormData] = useState({
         name: "",
@@ -82,22 +84,25 @@ function AddProduct() {
         }
 
         try {
-            const response = await fetch("http://localhost:7001/api/product/create", {
-                method: "POST",
-                body: formDataToSend,
+            const token = sessionStorage.getItem('token');
+
+            const result = await axios.post(`http://localhost:7001/api/product/create`, formDataToSend, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
-            const result = await response.json();
-
-            if (result?.success === 1) {
+            if (result?.data?.success) {
                 navigate('/admin/product');
             } else {
-                setError(result?.message)
+                setError(result?.data?.message);
             }
         } catch (error) {
-            setError("Error adding product:", error);
+            setError(error?.response?.data?.message || "Error adding product");
         }
     };
+
 
     return (
         <div

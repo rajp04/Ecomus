@@ -73,12 +73,12 @@ function App() {
               {permissions?.products?.includes('view') && <Route path='product/add' element={<AddProduct />} />}
               {permissions?.products?.includes('view') && <Route path='product/edit' element={<EditProduct />} />}
               {permissions?.products?.includes('view') && <Route path='product/view' element={<ViewProduct />} />}
-              {permissions?.profile?.includes('view') && <Route path='profile' element={<Profile />} />}
               {permissions?.orders?.includes('view') && <Route path='order' element={<Order />} />}
               {permissions?.role?.includes('view') && <Route path='role' element={<Role />} />}
               {permissions?.role?.includes('view') && <Route path='role/add' element={<AddRole />} />}
               {permissions?.role?.includes('view') && <Route path='role/edit' element={<EditRole />} />}
               {permissions?.inquiry?.includes('view') && <Route path='contact' element={<AdminContact />} />}
+              <Route path='profile' element={<Profile />} />
             </>
           )}
         </Route>

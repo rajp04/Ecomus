@@ -19,10 +19,9 @@ function Product() {
             try {
                 const token = sessionStorage.getItem('token');
 
-                const { data } = await axios.get(`http://localhost:7001/api/product/admin`, {
+                const { data } = await axios.get(`${url}/product/admin`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                console.log(data);
 
                 if (data?.success === 1) {
                     setProductData(data?.data)
@@ -35,7 +34,7 @@ function Product() {
     })
 
     const handleDelete = async (id) => {
-        const { data } = await axios.delete(`http://localhost:7001/api/product/delete/${id}`)
+        const { data } = await axios.delete(`${url}/product/delete/${id}`)
         if (data?.success === 1) {
             console.log("Product deleted");
         } else {

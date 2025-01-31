@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RiMenuUnfold4Line } from "react-icons/ri";
 import { MyContext } from "..";
 import { ImSearch } from "react-icons/im";
@@ -8,11 +8,34 @@ import { MdOutlineLockReset } from "react-icons/md";
 import { BiLogOut } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Header() {
 
   const { setSidebar, sidebar, openProfile, setOpenProfile } = useContext(MyContext);
   const navigate = useNavigate()
+  const url = import.meta.env.VITE_SERVER_URL
+  const [admin, setAdmin] = useState()
+
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      try {
+        const token = sessionStorage.getItem('token');
+
+        const { data } = await axios.get(`${url}/admin/role`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (data?.success === 1) {
+          setAdmin(data?.result);
+        } else {
+          console.log(data?.message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchAdmin()
+  })
 
   return (
     <div className={`h-[90px] w-full ${sidebar === true ? 'lg:pe-[320px]' : ''} text-black fixed z-10 flex items-center justify-between px-5 bg-white`}>
@@ -27,7 +50,9 @@ function Header() {
         <LuMessageCircleHeart className="bg-gray-400 text-white rounded-full p-2 h-10 w-10 cursor-pointer hover:text-blue-800 transition-all duration-200" />
         <IoMdNotificationsOutline className="bg-gray-400 text-white rounded-full p-2 h-10 w-10 cursor-pointer hover:text-blue-800 transition-all duration-200" />
         <div className="flex items-center xs:space-x-3 relative cursor-pointer" onClick={() => setOpenProfile(!openProfile)}>
-          <h1 className="xs:flex hidden text-2xl">Admin</h1>
+          {admin &&
+            <h1 className="xs:flex hidden text-2xl">{admin?.role?.name}</h1>
+          }
           <img src="https://res.cloudinary.com/dtdlad1ud/image/upload/v1703938887/y18sqhaus4snghlhcscm.jpg" alt="" className="h-12 w-12 rounded-full" />
           <div className={`bg-white text-black top-16 p-5 right-0 ${openProfile === true ? "absolute" : "hidden"}`}>
             <div className="whitespace-nowrap flex items-center font-semibold space-x-3 py-2 cursor-pointer" onClick={() => { navigate('/admin/profile'); setOpenProfile(false) }}>
