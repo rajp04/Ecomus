@@ -19,15 +19,9 @@ function Checkout() {
             <div className="grid llg:grid-cols-12 xl:gap-10 gap-7 w-[95%] m-auto py-16">
                 <div className="col-span-8 space-y-5">
                     <h1 className="text-3xl font-semibold">Billing details</h1>
-                    <div className="grid md:grid-cols-2 grid-cols-1 md:gap-8 gap-5">
-                        <div className="col-span-1 flex flex-col space-y-3">
-                            <label htmlFor="" className="font-medium">First Name<span className="text-[red]">*</span></label>
-                            <input type="text" className="border border-gray-300 rounded-md py-3 px-4 opacity-60 outline-black w-full" />
-                        </div>
-                        <div className="col-span-1 flex flex-col space-y-3">
-                            <label htmlFor="" className="font-medium">Last Name<span className="text-[red]">*</span></label>
-                            <input type="text" className="border border-gray-300 rounded-md py-3 px-4 opacity-60 outline-black w-full" />
-                        </div>
+                    <div className="flex flex-col space-y-3">
+                        <label htmlFor="" className="font-medium">Name<span className="text-[red]">*</span></label>
+                        <input type="text" className="border border-gray-300 rounded-md py-3 px-4 opacity-60 outline-black w-full" />
                     </div>
                     <div className="flex flex-col space-y-3">
                         <label htmlFor="" className="font-medium">Country/Region<span className="text-[red]">*</span></label>
@@ -50,7 +44,7 @@ function Checkout() {
                         <input type="text" className="border border-gray-300 rounded-md py-3 px-4 opacity-60 outline-black w-full" />
                     </div>
                     <div className="flex flex-col space-y-3">
-                        <label htmlFor="" className="font-medium">Order notes (optional)<span className="text-[red]">*</span></label>
+                        <label htmlFor="" className="font-medium">Order notes (optional)</label>
                         <textarea type="text" className="border border-gray-300 rounded-md py-3 px-4 opacity-60 outline-black w-full" />
                     </div>
                 </div>

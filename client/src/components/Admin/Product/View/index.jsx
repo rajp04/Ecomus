@@ -32,8 +32,12 @@ function ViewProduct() {
                         <p className="bg-orange-500 px-4 py-1 rounded-full text-white">{(state.variants[0].discount / state.variants[0].price) * 100}% OFF</p>
                     </div>
                     <h1 className="font-semibold text-xl ">Color:-</h1>
-                    <h1 className={`bg-[${state.variants[1].color}] h-7 w-7 border rounded-full p-2`}></h1>
-                    <h1 className="font-semibold text-xl ">Size:-</h1>
+                    <div className="flex items-center space-x-3">
+                        {state.variants.map((item) => (
+                            <h1 key={item.color} className={`bg-[${item.color}]  h-7 w-7 border rounded-full p-2`}></h1>
+                        ))}
+                    </div>
+                    <h1 className="font-semibold text-xl">Size:-</h1>
                     <h1 className=''>{state.variants[0].size}</h1>
                     <h1 className="font-semibold text-xl ">SKU:- {state.sku}</h1>
                     <h1 className="font-semibold text-xl ">Material:- {state.material}</h1>

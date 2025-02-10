@@ -86,12 +86,14 @@ function AddProduct() {
         try {
             const token = sessionStorage.getItem('token');
 
-            const result = await axios.post(`http://localhost:7001/api/product/create`, formDataToSend, {
+            const result = await axios.post(`${url}/product/create`, formDataToSend, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data",
                 },
             });
+
+            console.log(result);
 
             if (result?.data?.success) {
                 navigate('/admin/product');

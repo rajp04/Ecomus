@@ -39,6 +39,14 @@ const productSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        deliveryDate: {
+            type: Date,
+            default: function () {
+                let today = new Date();
+                today.setDate(today.getDate() + 3); 
+                return today;
+            }
+        },
         variants: [
             {
                 color: {
