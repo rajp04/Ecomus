@@ -110,4 +110,6 @@ const Delete = async (req, res) => {
     }
 };
 
-module.exports = { GetAddress, Create, Update, Delete };
+module.exports = {
+    GetAddress, Create, Update, Delete
+};
