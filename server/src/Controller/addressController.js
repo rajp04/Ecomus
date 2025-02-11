@@ -1,4 +1,4 @@
-const Address = require('../model/addressModel.js');
+const Address = require('../model/addressModel');
 
 // Get all addresses for a user
 const GetAddress = async (req, res) => {
