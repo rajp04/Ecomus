@@ -7,11 +7,13 @@ import { IoIosHeartEmpty } from "react-icons/io";
 import { CgShoppingBag } from "react-icons/cg";
 import { BiGridSmall, BiGridHorizontal } from "react-icons/bi";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function ShopDefault() {
   const [grid, setGrid] = useState(4);
+  const [productData, setProductData] = useState()
   const [screenSize, setScreenSize] = useState("lg");
-
+  const url = import.meta.env.VITE_SERVER_URL
   useEffect(() => {
     const updateScreenSize = () => {
       const width = window.innerWidth;
@@ -37,6 +39,26 @@ function ShopDefault() {
     md: [1, 2, 3],
     sm: [1, 2],
   };
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+
+        const data = await axios.get(`${url}/product/users`);
+        console.log(data);
+
+        if (data?.success === 1) {
+          setProductData(data?.data)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchProduct()
+  })
+
+  console.log(productData);
+
 
   return (
     <>

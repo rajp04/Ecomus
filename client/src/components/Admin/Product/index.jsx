@@ -34,7 +34,11 @@ function Product() {
     })
 
     const handleDelete = async (id) => {
-        const { data } = await axios.delete(`${url}/product/delete/${id}`)
+        const token = sessionStorage.getItem('token');
+
+        const { data } = await axios.delete(`${url}/product/delete/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
         if (data?.success === 1) {
             console.log("Product deleted");
         } else {
