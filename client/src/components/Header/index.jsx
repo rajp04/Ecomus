@@ -4,7 +4,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { RiShoppingBag2Line } from "react-icons/ri";
 import { FaAngleDown } from "react-icons/fa6";
 import { CgMenuLeft } from "react-icons/cg";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import { BiSearch } from "react-icons/bi";
@@ -20,18 +20,22 @@ import { FaPlus } from "react-icons/fa6";
 import { GrSubtract } from "react-icons/gr";
 import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
+import axios from 'axios'
 
 function Header() {
 
-    const [number, setNumber] = React.useState(1);
     const [isOpenSearch, setIsOpenSearch] = React.useState(false);
     const [isOpenCart, setIsOpenCart] = React.useState(false);
+    const [cart, setCart] = React.useState();
     const [isOpenMenu, setIsOpenMenu] = React.useState(false);
     const [openItem, setOpenItem] = React.useState(null);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorEl1, setAnchorEl1] = React.useState(null);
     const open = Boolean(anchorEl);
     const open1 = Boolean(anchorEl1);
+
+    const token = localStorage.getItem('userToken')
+    const navigate = useNavigate()
 
     const toggleDrawerSearch = (open) => (event) => {
         if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
@@ -53,16 +57,6 @@ function Header() {
         setIsOpenMenu(open);
     };
 
-    const handlePlus = () => {
-        setNumber(number + 1)
-    }
-
-    const handleSubTract = () => {
-        if (number > 0) {
-            setNumber(number - 1);
-        }
-    };
-
     const handleToggle = (item) => {
         setOpenItem(openItem === item ? null : item);
     };
@@ -77,6 +71,82 @@ function Header() {
         setAnchorEl(null);
         setAnchorEl1(null);
     };
+
+    React.useEffect(() => {
+        const cartData = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+        if (token) {
+            const fetchCart = async () => {
+                try {
+                    const { data } = await axios.get(`http://localhost:7001/api/cart/${token}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+
+                    if (data?.success === 1) {
+                        setCart(data?.result);
+                    } else {
+                        console.log(data?.message);
+                    }
+                } catch (error) {
+                    console.error("Error fetching cart:", error);
+                }
+            };
+
+            fetchCart();
+        } else {
+            setCart(cartData);
+        }
+    });
+
+    const handleCartNumber = async (id) => {
+        try {
+            const { data } = await axios.put(`http://localhost:7001/api/cart/update/${id}`, { qty: cart.qty }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            console.log(data);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleAddToCart = async (item) => {
+        if (token) {
+            try {
+                const { data } = await axios.post(
+                    `http://localhost:7001/api/cart/create`,
+                    { productId: item._id, userId: token, qty: cart.qty },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+
+                if (data?.success === 1) {
+                    console.log(data?.message);
+                } else {
+                    console.error('Error:', data?.message || 'Something went wrong');
+                }
+
+            } catch (error) {
+                console.error('Request failed:', error.response?.data?.message || error.message || error);
+            }
+        } else {
+            const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+            if (!Array.isArray(cartItems)) {
+                localStorage.setItem("cartItems", JSON.stringify([]));
+            }
+
+            const existingItem = cartItems.find((cartItem) => cartItem._id === item._id);
+
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cartItems.push({ ...item, qty: 1 });
+            }
+
+            localStorage.setItem("cartItems", JSON.stringify(cartItems))
+        }
+    }
 
     const drawerSearchContent = (
         <Box
@@ -182,60 +252,29 @@ function Header() {
                                 </div>
                             </div>
                         </div>
-                        <h1 className="py-5 border-b bg-white">Buy <span className="font-medium">$75.00</span> more to enjoy <span className="font-medium">Free Shipping</span></h1>
+                        <h1 className="py-5 border-b bg-white">Buy <span className="font-medium">&#8377;499</span> more to enjoy <span className="font-medium">Free Shipping</span></h1>
                     </div>
-                    <div className="overflow-y-auto scroll-hidden h-[425px] pt-[160px] px-8">
-                        <div className="flex space-x-2 py-4 border-b">
-                            <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
-                            <div className="flex flex-col">
-                                <h1 className="pb-1">Cotton jersey top</h1>
-                                <div>
-                                    <span className="text-gray-800 pe-2">$10.00</span><span className="text-[red]">$8.00</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <div className="bg-gray-300 flex items-center py-1 mt-1 w-fit space-x-5 px-3 rounded-md">
-                                        <GrSubtract className="cursor-pointer" onClick={handleSubTract} />
-                                        <h1>{number}</h1>
-                                        <FaPlus className="cursor-pointer" onClick={handlePlus} />
+                    <div className="overflow-y-auto scroll-hidden h-[465px] pt-[160px] px-8">
+                        {cart?.map((item, index) => (
+                            <div className="flex space-x-2 py-4 border-b" key={index}>
+                                <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
+                                <div className="flex flex-col">
+                                    <h1 className="pb-1">{item?.productId.name}</h1>
+                                    <div>
+                                        <del className="text-gray-800 pe-2">&#8377;{item?.productId?.variants[0].price}</del>
+                                        <span className="text-[red]">&#8377;{item?.productId?.variants[0].price - item?.productId?.variants[0].discount}</span>
                                     </div>
-                                    <h1 className="text-gray-700 border-b w-fit cursor-pointer">Remove</h1>
+                                    <div className="flex items-center space-x-2">
+                                        <div className="bg-gray-300 flex items-center py-1 mt-1 w-fit space-x-5 px-3 rounded-md">
+                                            <GrSubtract className="cursor-pointer" onClick={() => handleCartNumber(item._id)} />
+                                            <h1>{item.qty}</h1>
+                                            <FaPlus className="cursor-pointer" onClick={() => handleAddToCart(item)} />
+                                        </div>
+                                        <h1 className="text-gray-700 border-b w-fit cursor-pointer">Remove</h1>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="flex space-x-2 py-4 border-b">
-                            <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
-                            <div className="flex flex-col">
-                                <h1 className="pb-1">Cotton jersey top</h1>
-                                <div>
-                                    <span className="text-gray-800 pe-2">$10.00</span><span className="text-[red]">$8.00</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <div className="bg-gray-300 flex items-center py-1 mt-1 w-fit space-x-5 px-3 rounded-md">
-                                        <GrSubtract className="cursor-pointer" onClick={handleSubTract} />
-                                        <h1>{number}</h1>
-                                        <FaPlus className="cursor-pointer" onClick={handlePlus} />
-                                    </div>
-                                    <h1 className="text-gray-700 border-b w-fit cursor-pointer">Remove</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex space-x-2 py-4 border-b">
-                            <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
-                            <div className="flex flex-col">
-                                <h1 className="pb-1">Cotton jersey top</h1>
-                                <div>
-                                    <span className="text-gray-800 pe-2">$10.00</span><span className="text-[red]">$8.00</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <div className="bg-gray-300 flex items-center py-1 mt-1 w-fit space-x-5 px-3 rounded-md">
-                                        <GrSubtract className="cursor-pointer" onClick={handleSubTract} />
-                                        <h1>{number}</h1>
-                                        <FaPlus className="cursor-pointer" onClick={handlePlus} />
-                                    </div>
-                                    <h1 className="text-gray-700 border-b w-fit cursor-pointer">Remove</h1>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                     <div className="fixed xs:w-[450px] w-[300px] bottom-0 z-20">
                         <div className="bg-gray-200 px-8 py-5 flex items-center justify-center space-x-3">
@@ -255,15 +294,15 @@ function Header() {
                                 <h1 className="text-2xl font-semibold">$49.99 USD</h1>
                             </div>
                             <h1 className="text-gray-500 border-b-[2px] pb-3">Taxes and <span className="border-b border-gray-700 text-black">shipping</span> calculated at checkout</h1>
-                            <div className="flex items-center space-x-3 pt-3">
+                            {/* <div className="flex items-center space-x-3 pt-3">
                                 <input type="checkbox" name="" id="" />
                                 <h1>I agree with the <span className="border-b border-black">terms and conditions</span></h1>
-                            </div>
+                            </div> */}
                             <div className="flex items-center pt-3 w-full space-x-3">
                                 <div className="border w-full px-2 py-2 cursor-pointer text-xl text-center border-black rounded-md">
-                                    <button className="text-black">View cart</button>
+                                    <button className="text-black" onClick={() => navigate('/cart')}>View cart</button>
                                 </div>
-                                <Button className="check-btn w-full">Check out</Button>
+                                <Button className="check-btn w-full" onClick={() => navigate('/checkout')}>Check out</Button>
                             </div>
                         </div>
                     </div>
@@ -514,20 +553,28 @@ function Header() {
 
                 {/* User Login */}
                 <div className="sm:flex hidden">
-                    <Link to="http://localhost:5173/login">
-                        <FiUser />
-                    </Link>
+                    {token ? (
+                        <Link to="http://localhost:5173/account">
+                            <FiUser />
+                        </Link>
+                    ) : (
+                        <Link to="http://localhost:5173/login">
+                            <FiUser />
+                        </Link>
+                    )}
                 </div>
 
                 {/* Wishlist */}
-                <div className="relative sm:flex hidden">
-                    <p className="absolute -top-2 left-3 h-5 w-5 text-[16px] bg-[red] text-white rounded-full flex items-center justify-center">
-                        0
-                    </p>
-                    <Link to="http://localhost:5173/wishlist">
-                        <FaRegHeart />
-                    </Link>
-                </div>
+                {token &&
+                    <div className="relative sm:flex hidden">
+                        <p className="absolute -top-2 left-3 h-5 w-5 text-[16px] bg-[red] text-white rounded-full flex items-center justify-center">
+                            0
+                        </p>
+                        <Link to="http://localhost:5173/wishlist">
+                            <FaRegHeart />
+                        </Link>
+                    </div>
+                }
 
                 {/* Shopping Cart */}
                 <div className="relative cursor-pointer">

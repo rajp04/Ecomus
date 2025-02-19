@@ -16,6 +16,7 @@ const Cart = require('./Routes/cartRouter');
 const Order = require('./Routes/orderRouter');
 const Address = require('./Routes/addressRouter');
 const Coupon = require('./Routes/couponRouter');
+const Wishlist = require('./Routes/wishlistRouter');
 
 app.use(cors())
 app.use(express.json({ limit: "16kb" }))
@@ -32,6 +33,7 @@ app.use('/api/cart', Cart);
 app.use('/api/order', Order);
 app.use('/api/address', Address);
 app.use('/api/coupon', Coupon);
+app.use('/api/wishlist', Wishlist);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

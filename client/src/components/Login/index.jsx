@@ -25,7 +25,24 @@ function Login() {
             const { data } = await axios.post(`${url}/users/login`, register);
 
             if (data?.success === 1) {
-                localStorage.setItem('userToken', data?.token)
+                localStorage.setItem('userToken', data?.token);
+                const cartItems = JSON.parse(localStorage.getItem("cartItems"));
+
+                if (cartItems?.length > 0) {
+                    try {
+                        for (const item of cartItems) {
+                            await axios.post(
+                                `http://localhost:7001/api/cart/create`,
+                                { productId: item._id, userId: data?.token, qty: item.qty },
+                                { headers: { Authorization: `Bearer ${data?.token}` } }
+                            );
+                        }
+
+                        localStorage.removeItem("cartItems");
+                    } catch (error) {
+                        console.error('Error syncing cart:', error.response?.data?.message || error.message);
+                    }
+                }
                 navigate('/')
             } else {
                 setError(data?.message)

@@ -13,6 +13,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import LookBook from './LookBook';
 import Seller from './Seller';
+import { useNavigate } from 'react-router-dom';
 
 const slides = [
   {
@@ -35,6 +36,7 @@ const slides = [
 function Home() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -103,7 +105,7 @@ function Home() {
               <div className="space-y-5">
                 <h1 className="lg:text-[80px] w-[30%] md:text-[44px] text-[34px]">{slide.title}</h1>
                 <p className="text-[20px] md:flex hidden">{slide.description}</p>
-                <div className="flex items-center bg-black rounded-sm w-fit md:px-7 px-2 md:py-1">
+                <div className="flex items-center bg-black rounded-sm w-fit md:px-7 px-2 md:py-1" onClick={() => navigate('/shop-default')}>
                   <Button className="home-banner-color">Shop collection</Button>
                   <FaChevronRight className="home-banner-color" />
                 </div>

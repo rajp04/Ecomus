@@ -16,12 +16,11 @@ function Header() {
   const navigate = useNavigate()
   const url = import.meta.env.VITE_SERVER_URL
   const [admin, setAdmin] = useState()
+  const token = sessionStorage.getItem('token');
 
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const token = sessionStorage.getItem('token');
-
         const { data } = await axios.get(`${url}/admin/role`, {
           headers: { Authorization: `Bearer ${token}` },
         });

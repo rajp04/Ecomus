@@ -8,6 +8,7 @@ import ProductDetails from './components/ProductDetails';
 import Account from './components/Account';
 import Error from './components/Error';
 import Contact from './components/Contact';
+import Cart from './components/Cart';
 import Checkout from './components/Checkout';
 import AdminLogin from './components/Admin/Login';
 import Admin from './components/Admin';
@@ -30,6 +31,7 @@ function App() {
 
   const [permissions, setPermissions] = useState('');
   const url = import.meta.env.VITE_SERVER_URL
+  const token = localStorage.getItem('userToken')
 
   useEffect(() => {
     const fetchPermission = async () => {
@@ -55,14 +57,15 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/wishlist' element={<Wishlist />} />
+        {!token && <Route path='/login' element={<Login />} />}
+        {!token && <Route path='/register' element={<Register />} />}
+        {token && <Route path='/wishlist' element={<Wishlist />} />}
         <Route path='/shop-default' element={<ShopDefault />} />
-        <Route path='/product-details' element={<ProductDetails />} />
-        <Route path='/account' element={<Account />} />
-        <Route path='/checkout' element={<Checkout />} />
+        <Route path='/shop-default/:id' element={<ProductDetails />} />
+        {token && <Route path='/account' element={<Account />} />}
+        {token && <Route path='/checkout' element={<Checkout />} />}
         <Route path='/contact' element={<Contact />} />
+        <Route path='/cart' element={<Cart />} />
         <Route path='/admin/login' element={<AdminLogin />} />
         <Route path='/admin/' element={<Admin />}>
           {permissions && (

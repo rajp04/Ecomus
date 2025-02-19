@@ -3,7 +3,8 @@ const Product = require("../Model/productModel.js")
 
 const Create = async (req, res) => {
     try {
-        const { userId, productId, qty } = req.body;
+        const { productId, qty } = req.body;
+        const userId = req.user
 
         const product = await Product.findById(productId);
         if (!product) {
@@ -64,9 +65,9 @@ const GetCart = async (req, res) => {
 
 const GetCartByUser = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.user;
 
-        const result = await Cart.findOne({ userId: id }).populate('productId');
+        const result = await Cart.find({ userId: id }).populate('productId');
         if (!result) {
             res.json({
                 success: 0,
@@ -109,4 +110,36 @@ const Delete = async (req, res) => {
 }
 
 
-module.exports = { Create, GetCart, GetCartByUser, Delete}
+const Update = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { qty } = req.body;
+
+        const result = await Cart.findById(id);
+
+        if (!result) {
+            return res.status(404).json({
+                success: 0,
+                message: "Cart item not found"
+            });
+        }
+
+        result.qty -= qty;
+
+        const data = await result.save();
+
+        res.json({
+            success: 1,
+            message: "Updated cart item",
+            data
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: 0,
+            message: error.message
+        });
+    }
+}
+
+module.exports = { Create, GetCart, GetCartByUser, Delete, Update }

@@ -8,5 +8,6 @@ router.route('/create').post(VerifyJwt, Create);
 router.route('/:id').get(VerifyJwt, GetCartByUser);
 router.route('/').get(AdminAuthJwt, GetCart);
 router.route('/delete/:id').delete(VerifyJwt, Delete);
+router.route('/update/:id').put(VerifyJwt, Update);
 
 module.exports = router;
