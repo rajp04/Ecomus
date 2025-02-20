@@ -72,81 +72,90 @@ function Header() {
         setAnchorEl1(null);
     };
 
-    React.useEffect(() => {
-        const cartData = JSON.parse(localStorage.getItem('cartItems')) || [];
 
-        if (token) {
-            const fetchCart = async () => {
+    React.useEffect(() => {
+        const fetchCart = async () => {
+            if (token) {
                 try {
                     const { data } = await axios.get(`http://localhost:7001/api/cart/${token}`, {
-                        headers: { Authorization: `Bearer ${token}` }
+                        headers: { Authorization: `Bearer ${token}` },
                     });
-
                     if (data?.success === 1) {
                         setCart(data?.result);
                     } else {
                         console.log(data?.message);
                     }
                 } catch (error) {
-                    console.error("Error fetching cart:", error);
+                    console.error('Error fetching cart:', error);
                 }
-            };
+            } else {
+                const cartData = JSON.parse(localStorage.getItem('cartItems')) || [];
+                setCart(cartData);
+            }
+        };
+        fetchCart();
+    }, [token]);
 
-            fetchCart();
-        } else {
-            setCart(cartData);
+    const updateCartInLocalStorage = (updatedCart) => {
+        setCart(updatedCart);
+        localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    };
+
+    const handleSub = async (item) => {
+        if (item?.qty > 1) {
+            const newQty = item.qty - 1;
+            updateItemQuantity(item._id, newQty);
         }
-    });
+    };
 
-    const handleCartNumber = async (id) => {
-        try {
-            const { data } = await axios.put(`http://localhost:7001/api/cart/update/${id}`, { qty: cart.qty }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+    const handlePlus = async (item) => {
+        const newQty = item.qty + 1;
+        updateItemQuantity(item._id, newQty);
+    };
 
-            console.log(data);
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const handleAddToCart = async (item) => {
+    const updateItemQuantity = async (id, newQty) => {
         if (token) {
             try {
-                const { data } = await axios.post(
-                    `http://localhost:7001/api/cart/create`,
-                    { productId: item._id, userId: token, qty: cart.qty },
+                const { data } = await axios.put(
+                    `http://localhost:7001/api/cart/update/${id}`,
+                    { qty: newQty },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-
                 if (data?.success === 1) {
-                    console.log(data?.message);
-                } else {
-                    console.error('Error:', data?.message || 'Something went wrong');
+                    setCart((prevCart) =>
+                        prevCart.map((item) => (item._id === id ? { ...item, qty: newQty } : item))
+                    );
                 }
-
             } catch (error) {
-                console.error('Request failed:', error.response?.data?.message || error.message || error);
+                console.error('Error updating cart:', error);
             }
         } else {
-            const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-
-            if (!Array.isArray(cartItems)) {
-                localStorage.setItem("cartItems", JSON.stringify([]));
-            }
-
-            const existingItem = cartItems.find((cartItem) => cartItem._id === item._id);
-
-            if (existingItem) {
-                existingItem.qty += 1;
-            } else {
-                cartItems.push({ ...item, qty: 1 });
-            }
-
-            localStorage.setItem("cartItems", JSON.stringify(cartItems))
+            const updatedCart = cart?.map((item) => (item._id === id ? { ...item, qty: newQty } : item));
+            updateCartInLocalStorage(updatedCart);
         }
-    }
+    };
+
+    const handleRemove = async (item) => {
+        try {
+            if (token) {
+                const { data } = await axios.delete(`http://localhost:7001/api/cart/delete/${item._id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                if (data?.success === 1) {
+                    setCart((prevCart) => prevCart.filter((cartItem) => cartItem._id !== item._id));
+                } else {
+                    console.log(data?.message);
+                }
+            } else {
+                const updatedCart = cart.filter((cartItem) => cartItem._id !== item._id);
+                setCart(updatedCart);
+                localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+            }
+        } catch (error) {
+            console.error('Error removing item:', error);
+        }
+    };
 
     const drawerSearchContent = (
         <Box
@@ -257,25 +266,32 @@ function Header() {
                     <div className="overflow-y-auto scroll-hidden h-[465px] pt-[160px] px-8">
                         {cart?.map((item, index) => (
                             <div className="flex space-x-2 py-4 border-b" key={index}>
-                                <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
+                                <img
+                                    src={item?.images?.[0] || item?.productId?.images?.[0]}
+                                    alt={item?.name || item?.productId?.name}
+                                    className="h-24"
+                                />
                                 <div className="flex flex-col">
-                                    <h1 className="pb-1">{item?.productId.name}</h1>
+                                    <h1 className="pb-1">{item?.name || item?.productId?.name}</h1>
                                     <div>
-                                        <del className="text-gray-800 pe-2">&#8377;{item?.productId?.variants[0].price}</del>
-                                        <span className="text-[red]">&#8377;{item?.productId?.variants[0].price - item?.productId?.variants[0].discount}</span>
+                                        <del className="text-gray-800 pe-2">&#8377;{item?.variants?.[0].price || item?.productId?.variants?.[0].price}</del>
+                                        <span className="text-[red]">&#8377;
+                                            {item?.variants?.[0].price - item?.variants?.[0].discount || item?.productId?.variants?.[0].price - item?.productId?.variants?.[0].discount}
+                                        </span>
                                     </div>
                                     <div className="flex items-center space-x-2">
                                         <div className="bg-gray-300 flex items-center py-1 mt-1 w-fit space-x-5 px-3 rounded-md">
-                                            <GrSubtract className="cursor-pointer" onClick={() => handleCartNumber(item._id)} />
+                                            <GrSubtract className="cursor-pointer" onClick={() => handleSub(item)} />
                                             <h1>{item.qty}</h1>
-                                            <FaPlus className="cursor-pointer" onClick={() => handleAddToCart(item)} />
+                                            <FaPlus className="cursor-pointer" onClick={() => handlePlus(item)} />
                                         </div>
-                                        <h1 className="text-gray-700 border-b w-fit cursor-pointer">Remove</h1>
+                                        <h1 className="text-gray-700 border-b w-fit cursor-pointer" onClick={() => handleRemove(item)}>Remove</h1>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
+
                     <div className="fixed xs:w-[450px] w-[300px] bottom-0 z-20">
                         <div className="bg-gray-200 px-8 py-5 flex items-center justify-center space-x-3">
                             <div className="bg-white hover:bg-[red] hover:text-white transition-all duration-300 rounded-md px-6 py-2 cursor-pointer">
@@ -291,7 +307,15 @@ function Header() {
                         <div className="px-8 pt-3 pb-7 bg-white">
                             <div className="flex items-center justify-between pb-3">
                                 <h1 className="text-xl">Subtotal</h1>
-                                <h1 className="text-2xl font-semibold">$49.99 USD</h1>
+                                {cart &&
+                                    <h1 className="text-2xl font-semibold">
+                                        ₹{cart.reduce((acc, item) =>
+                                            acc + ((item.variants?.[0].price - item.variants?.[0].discount) * item.qty),
+                                            0) || cart.reduce((acc, item) =>
+                                                acc + ((item.productId.variants[0].price - item.productId.variants[0].discount) * item.qty),
+                                                0)}
+                                    </h1>
+                                }
                             </div>
                             <h1 className="text-gray-500 border-b-[2px] pb-3">Taxes and <span className="border-b border-gray-700 text-black">shipping</span> calculated at checkout</h1>
                             {/* <div className="flex items-center space-x-3 pt-3">

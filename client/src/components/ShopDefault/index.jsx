@@ -260,7 +260,7 @@ function ShopDefault() {
                       />
                     </div>
                     <div className="xs:space-y-3 space-y-1">
-                      <h1 className={`hover:text-[red] ${grid === 6 ? 'h-[45px]' : ''} ${grid === 5 ? 'h-[45px]' : ''}`}>{item.name.length > 35 ? `${item.name.slice(0, 35)}...` : item.name}</h1>
+                      <h1 className={`hover:text-[red] ${grid === 6 ? 'h-[45px]' : ''} ${grid === 5 ? 'h-[45px]' : ''}`}>{item?.name.length > 35 ? `${item?.name.slice(0, 35)}...` : item?.name}</h1>
                       <h1 className="font-semibold">₹ {item?.variants[0].price}</h1>
                       <p className={`max-w-[1000px] md:flex hidden ${grid === 6 ? 'h-[70px]' : ''}`}>{item.description.length > 50 ? `${item.description.slice(0, 50)}...` : item.description}</p>
                       <div className="flex items-center space-x-3">

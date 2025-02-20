@@ -124,7 +124,7 @@ const Update = async (req, res) => {
             });
         }
 
-        result.qty -= qty;
+        result.qty = qty;
 
         const data = await result.save();
 
