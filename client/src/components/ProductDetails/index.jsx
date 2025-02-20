@@ -120,11 +120,12 @@ function ProductDetails() {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-
                 const { data } = await axios.get(`${url}/product/${id}`);
 
                 if (data?.success === 1) {
                     setProduct(data?.data)
+                }else{
+                    console.log(data?.message);
                 }
             } catch (error) {
                 console.log(error)
@@ -142,7 +143,7 @@ function ProductDetails() {
             }
 
             const { data } = await axios.post(
-                `http://localhost:7001/api/wishlist/create`,
+                `${url}/wishlist/create`,
                 { productId: id, userId: token },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -162,7 +163,7 @@ function ProductDetails() {
         if (token) {
             try {
                 const { data } = await axios.post(
-                    `http://localhost:7001/api/cart/create`,
+                    `${url}/cart/create`,
                     { productId: item._id, userId: token, qty: number },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );

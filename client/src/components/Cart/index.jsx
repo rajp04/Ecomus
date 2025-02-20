@@ -15,6 +15,7 @@ function Cart() {
   const [cart, setCart] = useState();
   const [time, setTime] = useState(10 * 60);
   const token = localStorage.getItem('userToken');
+  const url = import.meta.env.VITE_SERVER_URL
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,7 +42,7 @@ function Cart() {
     const fetchCart = async () => {
       if (token) {
         try {
-          const { data } = await axios.get(`http://localhost:7001/api/cart/${token}`, {
+          const { data } = await axios.get(`${url}/cart/${token}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (data?.success === 1) {
@@ -58,7 +59,7 @@ function Cart() {
       }
     };
     fetchCart();
-  }, [token]);
+  });
 
   const updateCartInLocalStorage = (updatedCart) => {
     setCart(updatedCart);
@@ -81,7 +82,7 @@ function Cart() {
     if (token) {
       try {
         const { data } = await axios.put(
-          `http://localhost:7001/api/cart/update/${id}`,
+          `${url}/cart/update/${id}`,
           { qty: newQty },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -102,7 +103,7 @@ function Cart() {
   const handleRemove = async (item) => {
     try {
       if (token) {
-        const { data } = await axios.delete(`http://localhost:7001/api/cart/delete/${item._id}`, {
+        const { data } = await axios.delete(`${url}/cart/delete/${item._id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

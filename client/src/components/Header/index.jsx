@@ -27,6 +27,7 @@ function Header() {
     const [isOpenSearch, setIsOpenSearch] = React.useState(false);
     const [isOpenCart, setIsOpenCart] = React.useState(false);
     const [cart, setCart] = React.useState();
+    const [wishlist, setWishlist] = React.useState();
     const [isOpenMenu, setIsOpenMenu] = React.useState(false);
     const [openItem, setOpenItem] = React.useState(null);
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -35,6 +36,7 @@ function Header() {
     const open1 = Boolean(anchorEl1);
 
     const token = localStorage.getItem('userToken')
+    const url = import.meta.env.VITE_SERVER_URL;
     const navigate = useNavigate()
 
     const toggleDrawerSearch = (open) => (event) => {
@@ -77,7 +79,7 @@ function Header() {
         const fetchCart = async () => {
             if (token) {
                 try {
-                    const { data } = await axios.get(`http://localhost:7001/api/cart/${token}`, {
+                    const { data } = await axios.get(`${url}/cart/${token}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     if (data?.success === 1) {
@@ -94,7 +96,27 @@ function Header() {
             }
         };
         fetchCart();
-    }, [token]);
+    });
+
+    React.useEffect(() => {
+        const fetchWishlist = async () => {
+            try {
+                const { data } = await axios.get(`${url}/wishlist/${token}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                if (data?.success === 1 && Array.isArray(data?.data)) {
+                    setWishlist(data?.data);
+                } else {
+                    console.error("Invalid wishlist data format:", data);
+                }
+            } catch (error) {
+                console.error("Error fetching wishlist:", error);
+            }
+        };
+
+        fetchWishlist();
+    });
 
     const updateCartInLocalStorage = (updatedCart) => {
         setCart(updatedCart);
@@ -117,7 +139,7 @@ function Header() {
         if (token) {
             try {
                 const { data } = await axios.put(
-                    `http://localhost:7001/api/cart/update/${id}`,
+                    `${url}/cart/update/${id}`,
                     { qty: newQty },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
@@ -138,7 +160,7 @@ function Header() {
     const handleRemove = async (item) => {
         try {
             if (token) {
-                const { data } = await axios.delete(`http://localhost:7001/api/cart/delete/${item._id}`, {
+                const { data } = await axios.delete(`${url}/cart/delete/${item._id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -591,9 +613,11 @@ function Header() {
                 {/* Wishlist */}
                 {token &&
                     <div className="relative sm:flex hidden">
-                        <p className="absolute -top-2 left-3 h-5 w-5 text-[16px] bg-[red] text-white rounded-full flex items-center justify-center">
-                            0
-                        </p>
+                        {wishlist &&
+                            <p className="absolute -top-2 left-3 h-4 w-4 flex items-center justify-center text-[15px] bg-[red] text-white rounded-full">
+                                {wishlist?.length}
+                            </p>
+                        }
                         <Link to="http://localhost:5173/wishlist">
                             <FaRegHeart />
                         </Link>
@@ -602,9 +626,11 @@ function Header() {
 
                 {/* Shopping Cart */}
                 <div className="relative cursor-pointer">
-                    <p className="absolute -top-2 left-3 h-4 w-4 flex items-center justify-center text-[15px] bg-[red] text-white rounded-full">
-                        0
-                    </p>
+                    {cart &&
+                        <p className="absolute -top-2 left-3 h-4 w-4 flex items-center justify-center text-[15px] bg-[red] text-white rounded-full">
+                            {cart?.length}
+                        </p>
+                    }
                     <div onClick={toggleDrawerCart(true)}>
                         <RiShoppingBag2Line />
                     </div>

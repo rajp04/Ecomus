@@ -64,7 +64,7 @@ function ShopDefault() {
   const handleWishlist = async (id) => {
     try {
       const { data } = await axios.post(
-        `http://localhost:7001/api/wishlist/create`,
+        `${url}/wishlist/create`,
         { productId: id, userId: token },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -84,7 +84,7 @@ function ShopDefault() {
     if (token) {
       try {
         const { data } = await axios.post(
-          `http://localhost:7001/api/cart/create`,
+          `${url}/cart/create`,
           { productId: item._id, userId: token },
           { headers: { Authorization: `Bearer ${token}` } }
         );

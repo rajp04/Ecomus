@@ -14,6 +14,7 @@ function Description() {
     const url = import.meta.env.VITE_SERVER_URL
 
     const { id } = useParams();
+    
     useEffect(() => {
         const fetchProduct = async () => {
             try {

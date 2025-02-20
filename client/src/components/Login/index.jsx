@@ -32,7 +32,7 @@ function Login() {
                     try {
                         for (const item of cartItems) {
                             await axios.post(
-                                `http://localhost:7001/api/cart/create`,
+                                `${url}/cart/create`,
                                 { productId: item._id, userId: data?.token, qty: item.qty },
                                 { headers: { Authorization: `Bearer ${data?.token}` } }
                             );

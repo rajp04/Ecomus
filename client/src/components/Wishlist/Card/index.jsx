@@ -1,20 +1,22 @@
 import { CgShoppingBag } from "react-icons/cg";
-import { IoIosHeartEmpty } from "react-icons/io";
 import { TbArrowsCross } from "react-icons/tb";
 import { MdOutlineRemoveRedEye, MdDeleteOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Card() {
     const [wishlist, setWishlist] = useState([]);
     const token = localStorage.getItem("userToken");
     const [selectedImage, setSelectedImage] = useState(null);
     const [hoverImage, setHoverImage] = useState(null);
+    const url = import.meta.env.VITE_SERVER_URL;
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:7001/api/wishlist/${token}`, {
+                const { data } = await axios.get(`${url}/wishlist/${token}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -29,7 +31,54 @@ function Card() {
         };
 
         fetchWishlist();
-    }, [token]);
+    });
+
+    const handleAddToCart = async (item) => {
+        try {
+            const { data } = await axios.post(
+                `${url}/cart/create`,
+                { productId: item.productId._id, userId: token },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (data?.success === 1) {
+                const { data } = await axios.delete(
+                    `${url}/wishlist/delete/${item._id}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+
+                if (data?.success === 1) {
+                    console.log(data?.message);
+                }
+                else {
+                    console.error('Error:', data?.message || 'Something went wrong');
+                }
+            } else {
+                console.error('Error:', data?.message || 'Something went wrong');
+            }
+
+        } catch (error) {
+            console.error('Request failed:', error.response?.data?.message || error.message || error);
+        }
+    }
+
+    const handleDelete = async (id) => {
+        try {
+            const { data } = await axios.delete(
+                `${url}/wishlist/delete/${id}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (data?.success === 1) {
+                console.log(data?.message);
+            }
+            else {
+                console.error('Error:', data?.message || 'Something went wrong');
+            }
+        } catch (error) {
+            console.error('Request failed:', error.response?.data?.message || error.message || error);
+        }
+    }
 
 
     return (
@@ -44,7 +93,7 @@ function Card() {
                         />
                         <div className="absolute flex space-x-3 top-14 left-3/4 transition-all duration-1000">
                             <div className="tooltip">
-                                <div className="hidden group-hover:block transition-all duration-1000">
+                                <div className="hidden group-hover:block transition-all duration-1000" onClick={() => handleDelete(item._id)}>
                                     <MdDeleteOutline className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                                     <span className="tooltiptext">Remove Wihslist</span>
                                 </div>
@@ -52,15 +101,9 @@ function Card() {
                         </div>
                         <div className="absolute flex space-x-3 bottom-14 transition-all duration-1000">
                             <div className="tooltip">
-                                <div className="hidden group-hover:block transition-all duration-1000">
+                                <div className="hidden group-hover:block transition-all duration-1000" onClick={() => handleAddToCart(item)}>
                                     <CgShoppingBag className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                                     <span className="tooltiptext">Quick Add</span>
-                                </div>
-                            </div>
-                            <div className="tooltip">
-                                <div className="hidden group-hover:block transition-all duration-1000">
-                                    <IoIosHeartEmpty className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
-                                    <span className="tooltiptext">Add to Wishlist</span>
                                 </div>
                             </div>
                             <div className="tooltip">
@@ -70,7 +113,7 @@ function Card() {
                                 </div>
                             </div>
                             <div className="tooltip">
-                                <div className="hidden group-hover:block transition-all duration-1000">
+                                <div className="hidden group-hover:block transition-all duration-1000" onClick={() => navigate(`/shop-default/${item?.productId?._id}`)}>
                                     <MdOutlineRemoveRedEye className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                                     <span className="tooltiptext">Quick View</span>
                                 </div>
