@@ -1,5 +1,5 @@
 const User = require('../Model/userModel.js')
-
+const bcrypt = require('bcrypt')
 
 const Register = async (req, res) => {
     try {
@@ -137,22 +137,61 @@ const Delete = async (req, res) => {
 
 const Update = async (req, res) => {
     try {
-        const { firstName, lastName, email, password } = req.body
+        const { firstName, lastName, email, currentPassword, newPassword } = req.body;
         const id = req.user?._id;
 
-        const result = await User.findByIdAndUpdate(id, { firstName, lastName, email, password }, { new: true });
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({
+                success: 0,
+                message: "User not found",
+            });
+        }
 
-        return res.status(201).json({
+        let updates = { firstName, lastName, email };
+
+        if (newPassword) {
+            if (!currentPassword) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Current password is required to change password.",
+                });
+            }
+
+            const isMatch = await bcrypt.compare(currentPassword, user.password);
+            if (!isMatch) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Current password is incorrect.",
+                });
+            }
+
+            const isSamePassword = await bcrypt.compare(newPassword, user.password);
+            if (isSamePassword) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "New password cannot be the same as the current password.",
+                });
+            }
+
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            updates.password = hashedPassword;
+        }
+
+        const result = await User.findByIdAndUpdate(id, updates, { new: true }).select('-password');
+
+        return res.status(200).json({
             success: 1,
-            message: "User Updated successfully.",
-        })
+            message: "User updated successfully.",
+            user: result,
+        });
     } catch (error) {
-        return res.json({
+        return res.status(500).json({
             success: 0,
-            message: error.message
-        })
+            message: error.message,
+        });
     }
-}
+};
 
 
 const ForgetPassword = async (req, res) => {

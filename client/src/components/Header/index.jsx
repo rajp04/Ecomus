@@ -9,7 +9,7 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import { BiSearch } from "react-icons/bi";
 import { IoCloseSharp } from "react-icons/io5";
-import { Button, Divider, Menu } from "@mui/material";
+import { Button, Menu } from "@mui/material";
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { MdOutlineLocalShipping } from "react-icons/md";
@@ -27,6 +27,8 @@ function Header() {
     const [isOpenSearch, setIsOpenSearch] = React.useState(false);
     const [isOpenCart, setIsOpenCart] = React.useState(false);
     const [cart, setCart] = React.useState();
+    const [productData, setProductData] = React.useState();
+    const [searchQuery, setSearchQuery] = React.useState("");
     const [wishlist, setWishlist] = React.useState();
     const [isOpenMenu, setIsOpenMenu] = React.useState(false);
     const [openItem, setOpenItem] = React.useState(null);
@@ -118,6 +120,28 @@ function Header() {
         fetchWishlist();
     });
 
+    React.useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+
+                const { data } = await axios.get(`${url}/product/users`);
+
+                if (data?.success === 1) {
+                    setProductData(data?.data)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchProduct()
+    })
+
+    const filteredProducts = productData?.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const displayedProducts = searchQuery ? filteredProducts : productData?.slice(0, 5);
+
     const updateCartInLocalStorage = (updatedCart) => {
         setCart(updatedCart);
         localStorage.setItem('cartItems', JSON.stringify(updatedCart));
@@ -193,7 +217,8 @@ function Header() {
                         </div>
                         <div className="flex items-center space-x-2 border rounded-md mt-3 py-2 px-2 mb-5">
                             <BiSearch className="text-xl cursor-pointer" />
-                            <input type="text" placeholder="Search" className="outline-none" />
+                            <input type="text" placeholder="Search" className="outline-none" value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)} />
                         </div>
                     </div>
                     <div className="px-5 xs:pt-[32%] pt-[48%]">
@@ -207,54 +232,23 @@ function Header() {
 
                         <h1 className="text-2xl py-5 font-medium">Need some inspiration?</h1>
                         <>
-                            <div className="flex space-x-2 py-2">
-                                <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
-                                <div className="">
-                                    <h1 className="pb-1">Cotton jersey top</h1>
-                                    <span className="text-gray-800 pe-2">$10.00</span><span className="text-[red]">$8.00</span>
-                                </div>
-                            </div>
-                            <Divider />
-                        </>
-                        <>
-                            <div className="flex space-x-2 py-2">
-                                <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
-                                <div className="">
-                                    <h1 className="pb-1">Cotton jersey top</h1>
-                                    <span className="text-gray-800 pe-2">$10.00</span><span className="text-[red]">$8.00</span>
-                                </div>
-                            </div>
-                            <Divider />
-                        </>
-                        <>
-                            <div className="flex space-x-2 py-2">
-                                <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
-                                <div className="">
-                                    <h1 className="pb-1">Cotton jersey top</h1>
-                                    <span className="text-gray-800 pe-2">$10.00</span><span className="text-[red]">$8.00</span>
-                                </div>
-                            </div>
-                            <Divider />
-                        </>
-                        <>
-                            <div className="flex space-x-2 py-2">
-                                <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
-                                <div className="">
-                                    <h1 className="pb-1">Cotton jersey top</h1>
-                                    <span className="text-gray-800 pe-2">$10.00</span><span className="text-[red]">$8.00</span>
-                                </div>
-                            </div>
-                            <Divider />
-                        </>
-                        <>
-                            <div className="flex space-x-2 py-2">
-                                <img src="https://themesflat.co/html/ecomus/images/products/white-3.jpg" alt="" className="h-24" />
-                                <div className="">
-                                    <h1 className="pb-1">Cotton jersey top</h1>
-                                    <span className="text-gray-800 pe-2">$10.00</span><span className="text-[red]">$8.00</span>
-                                </div>
-                            </div>
-                            <Divider />
+                            {displayedProducts?.length > 0 ? (
+                                displayedProducts?.map((product) => (
+                                    <div key={product._id} className="flex space-x-2 py-2 border-b cursor-pointer" onClick={()=> navigate(`/shop-default/${product._id}`)}>
+                                        <img src={product?.images?.[0]} alt={product?.name} className="h-24" />
+                                        <div>
+                                            <h1 className="pb-1">{product?.name}</h1>
+                                            <span className="text-gray-800 pe-2">&#8377;{product.variants?.[0].price}</span>
+                                            {product.discountPrice && (
+                                                <span className="text-[red]">${product.variants?.[0].discount}</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No products found.</p>
+                            )}
+                            
                         </>
                     </div>
                 </div>

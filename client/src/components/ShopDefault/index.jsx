@@ -191,7 +191,7 @@ function ShopDefault() {
                       <img
                         src={item.images[0]}
                         alt=""
-                        className="rounded-md hover:scale-[1.12] transition-all duration-[2s] md:max-h-[450px] h-full"
+                        className="rounded-md hover:scale-[1.12] transition-all duration-[2s] md:max-h-[450px] h-full lg:w-auto md:w-[70%] w-[50%]"
                       />
                     </div>
                     <div className="xs:space-y-3 space-y-1">
@@ -216,14 +216,14 @@ function ShopDefault() {
                       </div>
                       <div className="flex md:space-x-3 space-x-1 transition-all duration-1000 xs:pt-5 pt-7">
                         <div className="tooltip">
-                          <div className="transition-all duration-1000 ">
+                          <div className="transition-all duration-1000 " onClick={() => handleAddToCart(item)}>
                             <CgShoppingBag className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                             <span className="tooltiptext">Quick Add</span>
                           </div>
                         </div>
                         {token &&
                           <div className="tooltip">
-                            <div className="transition-all duration-1000 md:flex hidden" onClick={() => handleWishlist(item._id)}>
+                            <div className="transition-all duration-1000" onClick={() => handleWishlist(item._id)}>
                               <IoIosHeartEmpty className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                               <span className="tooltiptext">Add to Wishlist</span>
                             </div>
@@ -236,7 +236,7 @@ function ShopDefault() {
                           </div>
                         </div>
                         <div className="tooltip">
-                          <div className="transition-all duration-1000 ">
+                          <div className="transition-all duration-1000" onClick={() => navigate(`/${item?.productId?._id}`)}>
                             <MdOutlineRemoveRedEye className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                             <span className="tooltiptext">Quick View</span>
                           </div>
@@ -252,19 +252,48 @@ function ShopDefault() {
               {productData && productData?.map((item, index) => (
                 <div className=" space-y-2 col-span-1 pb-5" key={index}>
                   <div className="flex flex-col xs:space-x-5 space-x-3">
-                    <div className="overflow-hidden rounded-md">
+                    <div className="overflow-hidden rounded-md relative transition-all duration-1000 group inline-flex items-center justify-center cursor-pointer">
                       <img
                         src={item.images[0]}
-                        alt=""
-                        className="rounded-md hover:scale-[1.12] transition-all duration-[2s] h-[75%] w-full"
+                        alt={item.productName || "Product"}
+                        className="rounded-md hover:scale-[1.12] transition-all duration-[2s]"
                       />
+                      <div className="absolute flex space-x-3 bottom-14 transition-all duration-1000">
+                        <div className="tooltip">
+                          <div className="hidden group-hover:block transition-all duration-1000" onClick={() => handleAddToCart(item)}>
+                            <CgShoppingBag className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                            <span className="tooltiptext">Quick Add</span>
+                          </div>
+                        </div>
+                        {token &&
+                          <div className="tooltip">
+                            <div className="hidden group-hover:block transition-all duration-1000" onClick={() => handleWishlist(item._id)}>
+                              <IoIosHeartEmpty className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                              <span className="tooltiptext">Add to Wishlist</span>
+                            </div>
+                          </div>
+                        }
+                        <div className="tooltip">
+                          <div className="hidden group-hover:block transition-all duration-1000">
+                            <TbArrowsCross className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                            <span className="tooltiptext">Add to Compare</span>
+                          </div>
+                        </div>
+                        <div className="tooltip">
+                          <div className="hidden group-hover:block transition-all duration-1000" onClick={() => navigate(`${item?.productId?._id}`)}>
+                            <MdOutlineRemoveRedEye className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                            <span className="tooltiptext">Quick View</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="absolute hidden group-hover:block bottom-0 w-full space-x-3 bg-[#0000004d] z-20 text-center text-white font-semibold py-1 transition-all duration-1000">
+                        <span>{item.variants[0].size}</span>
+                      </div>
                     </div>
                     <div className="xs:space-y-3 space-y-1">
                       <h1 className={`hover:text-[red] ${grid === 6 ? 'h-[45px]' : ''} ${grid === 5 ? 'h-[45px]' : ''}`}>{item?.name.length > 35 ? `${item?.name.slice(0, 35)}...` : item?.name}</h1>
                       <h1 className="font-semibold">₹ {item?.variants[0].price}</h1>
-                      <p className={`max-w-[1000px] md:flex hidden ${grid === 6 ? 'h-[70px]' : ''}`}>{item.description.length > 50 ? `${item.description.slice(0, 50)}...` : item.description}</p>
                       <div className="flex items-center space-x-3">
-
                         {item.variants.map((variant, index) => (
                           <div
                             key={index}
@@ -276,38 +305,6 @@ function ShopDefault() {
                             ></p>
                           </div>
                         ))}
-                      </div>
-                      <div className="space-x-3 text-black font-semibold py-1 transition-all duration-1000">
-                        <span>Size:- {item.variants[0].size}</span>
-                      </div>
-                      <div className="flex md:space-x-3 space-x-1 transition-all duration-1000 xs:pt-5 pt-7">
-                        {/* add to cart */}
-                        <div className="tooltip">
-                          <div className="transition-all duration-1000" onClick={() => handleAddToCart(item)}>
-                            <CgShoppingBag className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
-                            <span className="tooltiptext">Quick Add</span>
-                          </div>
-                        </div>
-                        {token &&
-                          <div className="tooltip">
-                            <div className="transition-all duration-1000 md:flex hidden" onClick={() => handleWishlist(item._id)}>
-                              <IoIosHeartEmpty className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
-                              <span className="tooltiptext">Add to Wishlist</span>
-                            </div>
-                          </div>
-                        }
-                        <div className="tooltip">
-                          <div className="transition-all duration-1000 md:flex hidden">
-                            <TbArrowsCross className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
-                            <span className="tooltiptext">Add to Compare</span>
-                          </div>
-                        </div>
-                        <div className="tooltip">
-                          <div className="transition-all duration-1000 " onClick={() => navigate(`${item._id}`)}>
-                            <MdOutlineRemoveRedEye className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
-                            <span className="tooltiptext">Quick View</span>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
