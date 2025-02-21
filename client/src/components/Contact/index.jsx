@@ -11,13 +11,13 @@ function Contact() {
     const [email, setEmail] = useState()
     const [message, setMessage] = useState()
     const [error, setError] = useState()
-    // const url = import.meta.env.VITE_SERVER_URL
+    const url = import.meta.env.VITE_SERVER_URL
 
     const handleSubmit = async () => {
         try {
             const user = { name, email, message }
 
-            const { data } = await axios.post(`http://localhost:7001/api/inquiry/create`, user);
+            const { data } = await axios.post(`${url}/inquiry/create`, user);
             if (data?.success === 1) {
                 setName('')
                 setMessage('')

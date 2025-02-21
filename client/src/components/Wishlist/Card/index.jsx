@@ -14,23 +14,24 @@ function Card() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        const fetchWishlist = async () => {
-            try {
-                const { data } = await axios.get(`${url}/wishlist/${token}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+        if (token) {
+            const fetchWishlist = async () => {
+                try {
+                    const { data } = await axios.get(`${url}/wishlist/${token}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
 
-                if (data.success === 1 && Array.isArray(data.data)) {
-                    setWishlist(data.data);
-                } else {
-                    console.error("Invalid wishlist data format:", data);
+                    if (data.success === 1 && Array.isArray(data.data)) {
+                        setWishlist(data.data);
+                    } else {
+                        console.error("Invalid wishlist data format:", data);
+                    }
+                } catch (error) {
+                    console.error("Error fetching wishlist:", error);
                 }
-            } catch (error) {
-                console.error("Error fetching wishlist:", error);
-            }
-        };
-
-        fetchWishlist();
+            };
+            fetchWishlist();
+        }
     });
 
     const handleAddToCart = async (item) => {

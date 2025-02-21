@@ -1,5 +1,5 @@
 import { FiArrowUpRight } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaFacebookF, FaXTwitter, FaInstagram, FaTiktok, FaSquarePinterest, FaAngleDown } from "react-icons/fa6";
 import { Button, Menu, MenuItem } from '@mui/material';
 import React from "react";
@@ -17,6 +17,10 @@ function Footer() {
     const [anchorEl1, setAnchorEl1] = React.useState(null);
     const open = Boolean(anchorEl);
     const open1 = Boolean(anchorEl1);
+
+    const url = import.meta.env.VITE_SERVER_URL
+    const navigate = useNavigate();
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -39,7 +43,7 @@ function Footer() {
     }
 
     const handleSubscribe = async () => {
-        const { data } = await axios.post(`http://localhost:7001/api/users/subscribe`, email);
+        const { data } = await axios.post(`${url}/users/subscribe`, email);
         if (data?.success === 1) {
             setEmail('')
         }
@@ -102,8 +106,8 @@ function Footer() {
                         } space-y-2`}>
                         <h1 className="pt-[13px] cursor-pointer w-fit hover:text-[red]">Our Story</h1>
                         <h1 className="cursor-pointer w-fit hover:text-[red]">Visit Our Store</h1>
-                        <h1 className="cursor-pointer w-fit hover:text-[red]">Contact Us</h1>
-                        <h1 className="cursor-pointer w-fit hover:text-[red]">Account</h1>
+                        <h1 className="cursor-pointer w-fit hover:text-[red]" onClick={()=> navigate('/contact')}>Contact Us</h1>
+                        <h1 className="cursor-pointer w-fit hover:text-[red]" onClick={()=> navigate('/account')}>Account</h1>
                     </div>
                 </div>
                 <div className="col-span-1 space-y-2">
