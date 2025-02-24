@@ -8,10 +8,10 @@ import axios from 'axios'
 
 function Register() {
 
-    const [firstName, setFirstName] = useState();
-    const [lastName, setLastName] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [error, setError] = useState();
     const url = import.meta.env.VITE_SERVER_URL
     const navigate = useNavigate()

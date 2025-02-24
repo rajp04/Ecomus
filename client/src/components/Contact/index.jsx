@@ -7,9 +7,9 @@ import axios from 'axios'
 
 function Contact() {
 
-    const [name, setName] = useState()
-    const [email, setEmail] = useState()
-    const [message, setMessage] = useState()
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [message, setMessage] = useState("")
     const [error, setError] = useState()
     const url = import.meta.env.VITE_SERVER_URL
 

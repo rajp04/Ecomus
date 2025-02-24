@@ -24,7 +24,7 @@ import axios from 'axios'
 
 function Header() {
 
-    const [isOpenSearch, setIsOpenSearch] = React.useState(false);
+    const [isOpenSearch, setIsOpenSearch] = React.useState();
     const [isOpenCart, setIsOpenCart] = React.useState(false);
     const [cart, setCart] = React.useState();
     const [productData, setProductData] = React.useState();
@@ -98,27 +98,29 @@ function Header() {
             }
         };
         fetchCart();
-    });
+    },[token, url]);
 
     React.useEffect(() => {
-        const fetchWishlist = async () => {
-            try {
-                const { data } = await axios.get(`${url}/wishlist/${token}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+        if (token) {
+            const fetchWishlist = async () => {
+                try {
+                    const { data } = await axios.get(`${url}/wishlist/${token}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
 
-                if (data?.success === 1 && Array.isArray(data?.data)) {
-                    setWishlist(data?.data);
-                } else {
-                    console.error("Invalid wishlist data format:", data);
+                    if (data?.success === 1 && Array.isArray(data?.data)) {
+                        setWishlist(data?.data);
+                    } else {
+                        console.error("Invalid wishlist data format:", data);
+                    }
+                } catch (error) {
+                    console.error("Error fetching wishlist:", error);
                 }
-            } catch (error) {
-                console.error("Error fetching wishlist:", error);
-            }
-        };
+            };
 
-        fetchWishlist();
-    });
+            fetchWishlist();
+        }
+    },[token, url]);
 
     React.useEffect(() => {
         const fetchProduct = async () => {
@@ -134,7 +136,7 @@ function Header() {
             }
         }
         fetchProduct()
-    })
+    },[url])
 
     const filteredProducts = productData?.filter((product) =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -234,7 +236,7 @@ function Header() {
                         <>
                             {displayedProducts?.length > 0 ? (
                                 displayedProducts?.map((product) => (
-                                    <div key={product._id} className="flex space-x-2 py-2 border-b cursor-pointer" onClick={()=> navigate(`/shop-default/${product._id}`)}>
+                                    <div key={product._id} className="flex space-x-2 py-2 border-b cursor-pointer" onClick={() => navigate(`/shop-default/${product._id}`)}>
                                         <img src={product?.images?.[0]} alt={product?.name} className="h-24" />
                                         <div>
                                             <h1 className="pb-1">{product?.name}</h1>
@@ -248,7 +250,7 @@ function Header() {
                             ) : (
                                 <p>No products found.</p>
                             )}
-                            
+
                         </>
                     </div>
                 </div>

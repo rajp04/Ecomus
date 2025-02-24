@@ -13,7 +13,10 @@ import { useNavigate } from "react-router-dom";
 function ShopDefault() {
   const [grid, setGrid] = useState(4);
   const [screenSize, setScreenSize] = useState("lg");
-  const [productData, setProductData] = useState()
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 8;
+
+  const [productData, setProductData] = useState([])
   const url = import.meta.env.VITE_SERVER_URL
   const token = localStorage.getItem('userToken');
 
@@ -48,18 +51,20 @@ function ShopDefault() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-
         const { data } = await axios.get(`${url}/product/users`);
 
-        if (data?.success === 1) {
-          setProductData(data?.data)
+        if (data?.success === 1 && Array.isArray(data?.data)) {
+          setProductData(data?.data);
+        } else {
+          setProductData([]);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
+        setProductData([]);
       }
-    }
+    };
     fetchProduct()
-  })
+  }, [url])
 
   const handleWishlist = async (id) => {
     try {
@@ -118,6 +123,45 @@ function ShopDefault() {
     }
   }
 
+  const [selectedFilter, setSelectedFilter] = useState("Featured");
+  const [filteredData, setFilteredData] = useState([...productData]);
+
+  useEffect(() => {
+    let sortedData = [...productData];
+
+    switch (selectedFilter) {
+      case "Best Selling":
+        sortedData = sortedData.sort((a, b) => b.totalSold - a.totalSold);
+        break;
+      case "Alphabetically, A-Z":
+        sortedData = sortedData.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "Alphabetically, Z-A":
+        sortedData = sortedData.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "Price, high to low":
+        sortedData = sortedData.sort((a, b) => b.variants[0].price - a.variants[0].price);
+        break;
+      case "Price, low to high":
+        sortedData = sortedData.sort((a, b) => a.variants[0].price - b.variants[0].price);
+        break;
+      case "Date, old to new":
+        sortedData = sortedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        break;
+      case "Date, new to old":
+        sortedData = sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      default:
+        break;
+    }
+
+    setFilteredData(sortedData);
+  }, [selectedFilter, productData]);
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredData.slice(indexOfFirstProduct, indexOfLastProduct);
+
   return (
     <>
       <Header />
@@ -153,21 +197,20 @@ function ShopDefault() {
               </React.Fragment>
             ))}
           </div>
-
           <div>
             <select
-              name=""
-              id=""
               className="outline-none border sm:px-4 rounded-md hover:border-black py-2 xs:text-base text-sm"
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value)}
             >
-              <option value="">Featured</option>
-              <option value="">Best Selling</option>
-              <option value="">Alphabetically, A-Z</option>
-              <option value="">Alphabetically, Z-A</option>
-              <option value="">Price, high to low</option>
-              <option value="">Price, low to high</option>
-              <option value="">Date, old to new</option>
-              <option value="">Date, new to old</option>
+              <option value="Featured">Featured</option>
+              <option value="Best Selling">Best Selling</option>
+              <option value="Alphabetically, A-Z">Alphabetically, A-Z</option>
+              <option value="Alphabetically, Z-A">Alphabetically, Z-A</option>
+              <option value="Price, high to low">Price, high to low</option>
+              <option value="Price, low to high">Price, low to high</option>
+              <option value="Date, old to new">Date, old to new</option>
+              <option value="Date, new to old">Date, new to old</option>
             </select>
           </div>
         </div>
@@ -184,7 +227,7 @@ function ShopDefault() {
           {/* Example Product Card */}
           {grid === 1 ? (
             <div>
-              {productData && productData?.map((item, index) => (
+              {currentProducts?.map((item, index) => (
                 <div className=" space-y-2 col-span-1 pb-5" key={index}>
                   <div className="flex xs:space-x-5 space-x-3">
                     <div className="overflow-hidden rounded-md lg:w-auto md:w-[70%] w-[50%]">
@@ -236,7 +279,7 @@ function ShopDefault() {
                           </div>
                         </div>
                         <div className="tooltip">
-                          <div className="transition-all duration-1000" onClick={() => navigate(`/${item?.productId?._id}`)}>
+                          <div className="transition-all duration-1000" onClick={() => navigate(`${item?._id}`)}>
                             <MdOutlineRemoveRedEye className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                             <span className="tooltiptext">Quick View</span>
                           </div>
@@ -249,7 +292,7 @@ function ShopDefault() {
             </div>
           ) : (
             <>
-              {productData && productData?.map((item, index) => (
+              {currentProducts?.map((item, index) => (
                 <div className=" space-y-2 col-span-1 pb-5" key={index}>
                   <div className="flex flex-col xs:space-x-5 space-x-3">
                     <div className="overflow-hidden rounded-md relative transition-all duration-1000 group inline-flex items-center justify-center cursor-pointer">
@@ -280,7 +323,7 @@ function ShopDefault() {
                           </div>
                         </div>
                         <div className="tooltip">
-                          <div className="hidden group-hover:block transition-all duration-1000" onClick={() => navigate(`${item?.productId?._id}`)}>
+                          <div className="hidden group-hover:block transition-all duration-1000" onClick={() => navigate(`${item?._id}`)}>
                             <MdOutlineRemoveRedEye className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                             <span className="tooltiptext">Quick View</span>
                           </div>
@@ -312,6 +355,24 @@ function ShopDefault() {
               ))}
             </>
           )}
+        </div>
+
+        <div className="flex justify-center mt-10 space-x-2">
+          <button
+            className={`px-4 py-2 rounded-md ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-black text-white"}`}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <span className="px-4 py-2 border">{currentPage}</span>
+          <button
+            className={`px-4 py-2 rounded-md ${indexOfLastProduct >= productData.length ? "bg-gray-300 cursor-not-allowed" : "bg-black text-white"}`}
+            onClick={() => setCurrentPage((prev) => (indexOfLastProduct < productData.length ? prev + 1 : prev))}
+            disabled={indexOfLastProduct >= productData.length}
+          >
+            Next
+          </button>
         </div>
       </div >
       <Footer />

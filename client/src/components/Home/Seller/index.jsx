@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 function Seller() {
 
     const [productData, setProductData] = useState()
+    const [visibleCount, setVisibleCount] = useState(4);
     const url = import.meta.env.VITE_SERVER_URL
     const token = localStorage.getItem('userToken');
     const navigate = useNavigate();
@@ -26,13 +27,16 @@ function Seller() {
             }
         }
         fetchProduct()
-    })
+    }, [url])
 
     const topSoldProducts = productData
         ?.filter(item => item?.totalSold)
         .sort((a, b) => b.totalSold - a.totalSold)
         .slice(0, 12);
-console.log(topSoldProducts);
+
+    const handleLoadMore = () => {
+        setVisibleCount(prevCount => prevCount + 4); 
+    };
 
     const handleWishlist = async (id) => {
         try {
@@ -97,7 +101,7 @@ console.log(topSoldProducts);
             <h1 className="text-center text-5xl pb-5">Best Seller</h1>
             <p className="text-center">Shop the Latest Styles: Stay ahead of the curve with our newest arrivals</p>
             <div className="pt-16 grid lg:grid-cols-4 md:grid-cols-3 xxs:grid-cols-2 grid-cols-1 sm:gap-8 gap-3">
-                {topSoldProducts && topSoldProducts?.map((item, index) => (
+                {topSoldProducts?.slice(0, visibleCount).map((item, index) => (
                     <div className=" space-y-2 col-span-1 pb-5" key={index}>
                         <div className="flex flex-col xs:space-x-5 space-x-3">
                             <div className="overflow-hidden rounded-md relative transition-all duration-1000 group inline-flex items-center justify-center cursor-pointer">
@@ -160,7 +164,7 @@ console.log(topSoldProducts);
                 ))}
             </div>
             <div className="flex justify-center pt-5">
-                <button className="border text-lg font-semibold border-black px-10 py-3 rounded-lg">Load more</button>
+                <button className="border text-lg font-semibold border-black px-10 py-3 rounded-lg" onClick={handleLoadMore}>Load more</button>
             </div>
         </div>
     )
