@@ -25,17 +25,19 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Footer from '../Footer';
+import { useNavigate } from "react-router-dom";
 
 function ProductDetails() {
 
     const [selectMenu, setSelectMenu] = useState('description')
     const [product, setProduct] = useState()
     const [size, setSize] = useState();
+    const [productData, setProductData] = useState();
     const [color, setColor] = useState();
     const url = import.meta.env.VITE_SERVER_URL
     const token = localStorage.getItem('userToken');
     const { id } = useParams();
-
+    const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState();
     const [activeIndex, setActiveIndex] = useState(0);
     const [number, setNumber] = useState(1);
@@ -88,35 +90,6 @@ function ProductDetails() {
         ],
     };
 
-    const productData = [
-        {
-            img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
-            name: "Ribbed Tank Top",
-            price: "$16.95",
-        },
-        {
-            img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
-            name: "Ribbed Tank Top",
-            price: "$16.95",
-        },
-        {
-            img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
-            name: "Ribbed Tank Top",
-            price: "$16.95",
-        },
-        {
-            img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
-            name: "Ribbed Tank Top",
-            price: "$16.95",
-        },
-        {
-            img: "https://themesflat.co/html/ecomus/images/products/white-1.jpg",
-            name: "Ribbed Tank Top",
-            price: "$16.95",
-        },
-
-    ];
-
     useEffect(() => {
         const fetchProduct = async () => {
             try {
@@ -124,7 +97,7 @@ function ProductDetails() {
 
                 if (data?.success === 1) {
                     setProduct(data?.data)
-                }else{
+                } else {
                     console.log(data?.message);
                 }
             } catch (error) {
@@ -196,6 +169,24 @@ function ProductDetails() {
 
         }
     }
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const { data } = await axios.get(`${url}/product/users`);
+
+                if (data?.success === 1 && Array.isArray(data?.data)) {
+                    setProductData(data?.data);
+                } else {
+                    setProductData([]);
+                }
+            } catch (error) {
+                console.log(error);
+                setProductData([]);
+            }
+        };
+        fetchProduct()
+    }, [url])
 
     return (
         <>
@@ -428,39 +419,40 @@ function ProductDetails() {
 
                 <div className='pt-14'>
                     <h1 className='text-5xl text-center'>People Also Bought</h1>
-                    <div className="pt-16 gap-5">
+                    <div className="pt-16">
                         <Slider {...settings}>
-                            {productData.map((product, index) => (
+                            {productData?.map((product, index) => (
                                 <div key={index} className="space-y-2 pb-5">
                                     <div className="overflow-hidden rounded-md relative transition-all duration-1000 group inline-flex items-center justify-center cursor-pointer">
                                         <img
-                                            src={product.img}
+                                            src={product.images?.[0]}
                                             alt={product.name}
                                             className="rounded-md hover:scale-[1.12] transition-all duration-[2s]"
                                         />
                                         <div className="absolute flex space-x-3 bottom-14 transition-all duration-1000">
-                                            {/* Add to cart */}
                                             <div className="tooltip">
-                                                <div className="hidden group-hover:block transition-all duration-1000">
-                                                    <CgShoppingBag className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                                                <div className="hidden group-hover:block transition-all duration-1000" onClick={() => handleAddToCart(product)}>
+                                                    <CgShoppingBag className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                                                     <span className="tooltiptext">Quick Add</span>
                                                 </div>
                                             </div>
-                                            <div className="tooltip">
-                                                <div className="hidden group-hover:block transition-all duration-1000">
-                                                    <IoIosHeartEmpty className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
-                                                    <span className="tooltiptext">Add to Wishlist</span>
+                                            {token &&
+                                                <div className="tooltip">
+                                                    <div className="hidden group-hover:block transition-all duration-1000" onClick={() => handleWishlist(product._id)}>
+                                                        <IoIosHeartEmpty className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                                                        <span className="tooltiptext">Add to Wishlist</span>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }
                                             <div className="tooltip">
                                                 <div className="hidden group-hover:block transition-all duration-1000">
-                                                    <TbArrowsCross className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                                                    <TbArrowsCross className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                                                     <span className="tooltiptext">Add to Compare</span>
                                                 </div>
                                             </div>
                                             <div className="tooltip">
-                                                <div className="hidden group-hover:block transition-all duration-1000">
-                                                    <MdOutlineRemoveRedEye className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
+                                                <div className="hidden group-hover:block transition-all duration-1000" onClick={() => navigate(`/shop-default/${product?._id}`)}>
+                                                    <MdOutlineRemoveRedEye className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                                                     <span className="tooltiptext">Quick View</span>
                                                 </div>
                                             </div>
@@ -473,17 +465,20 @@ function ProductDetails() {
                                         </div>
                                     </div>
                                     <h1 className="hover:text-[red]">{product.name}</h1>
-                                    <h1 className="font-semibold">{product.price}</h1>
+                                    <h1 className="font-semibold">{product.variants?.[0].price}</h1>
                                     <div className="flex items-center space-x-3">
-                                        <div className="hover:border border-black h-7 cursor-pointer w-7 flex items-center justify-center rounded-full">
-                                            <p className="bg-[yellow] h-5 w-5 hover:w-3 hover:h-3 transition-all duration-500 rounded-full"></p>
-                                        </div>
-                                        <div className="hover:border border-black h-7 cursor-pointer w-7 flex items-center justify-center rounded-full">
-                                            <p className="bg-[black] h-5 w-5 hover:w-3 hover:h-3 transition-all duration-500 rounded-full"></p>
-                                        </div>
-                                        <div className="hover:border border-black h-7 cursor-pointer w-7 flex items-center justify-center rounded-full">
-                                            <p className="bg-gray-200 h-5 w-5 hover:w-3 hover:h-3 transition-all duration-500 rounded-full"></p>
-                                        </div>
+                                        {product.variants.map((variant, index) => (
+                                            <div
+                                                key={index}
+                                                className="p-1 border border-black rounded-full"
+                                            >
+                                                <p
+                                                    className={`h-5 w-5 rounded-full cursor-pointer`}
+                                                    style={{ backgroundColor: variant.color }}
+                                                    onClick={() => setColor(variant.color)}
+                                                ></p>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             ))}

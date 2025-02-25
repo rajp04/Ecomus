@@ -27,7 +27,7 @@ const GetReviews = async (req, res) => {
 
         const reviews = await Review.find({ product: id }).populate('product');
 
-        res.status(200).json({
+        return res.status(200).json({
             success: 1,
             reviews
         });
@@ -40,29 +40,21 @@ const GetReviews = async (req, res) => {
 };
 
 // Delete a review
-const Delete = async (req, res) => {
+const Reviews = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        const deletedReview = await Review.findOneAndDelete({ _id: id });
-
-        if (!deletedReview) {
-            return res.status(404).json({
-                message: "Review not found",
-                success: 0
-            });
-        }
-
+        const reviews = await Review.find().populate('product');  
         res.status(200).json({
-            message: "Review deleted successfully",
-            success: 1
+            message: "Reviews fetched successfully",
+            success: 1,
+            reviews, 
         });
     } catch (error) {
         res.status(500).json({
             message: error.message,
-            success: 0
+            success: 0,
         });
     }
 };
 
-module.exports = { Create, GetReviews, Delete };
+
+module.exports = { Create, GetReviews, Reviews };
