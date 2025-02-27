@@ -16,11 +16,12 @@ function Review() {
   const [rating, setRating] = useState(0);
 
   const { id } = useParams();
+  const url = import.meta.env.VITE_SERVER_URL;
 
   const handleSubmit = async () => {
     const review = { name, email, title, comment, rating, product: id }
     try {
-      const { data } = await axios.post(`http://localhost:7001/api/review/create`, review);
+      const { data } = await axios.post(`${url}/review/create`, review);
 
       if (data?.success === 1) {
         setWrite(true)
@@ -36,7 +37,7 @@ function Review() {
 
   useEffect(() => {
     const fetchReview = async () => {
-      const { data } = await axios.get(`http://localhost:7001/api/review/${id}`);
+      const { data } = await axios.get(`${url}/review/${id}`);
       if (data?.success === 1) {
         setData(data?.reviews)
       } else {
@@ -44,7 +45,7 @@ function Review() {
       }
     }
     fetchReview();
-  }, [id]);
+  }, [id, url]);
 
   const averageRating = data?.length > 0
     ? data.reduce((sum, review) => sum + review.rating, 0) / data.length

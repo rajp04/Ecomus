@@ -4,14 +4,13 @@ import "slick-carousel/slick/slick-theme.css";
 import { FiArrowUpRight } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import axios from 'axios'
-
 import { useNavigate } from "react-router-dom";
 import { Rating, Stack } from "@mui/material";
 
 function Testimonial() {
 
     const [data, setData] = useState()
-
+    const url = import.meta.env.VITE_SERVER_URL;
     const navigate = useNavigate()
 
     const settings = {
@@ -40,10 +39,23 @@ function Testimonial() {
     useEffect(() => {
         const fetchReview = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:7001/api/review`);
+                const { data } = await axios.get(`${url}/review`);
 
                 if (data?.success === 1) {
-                    setData(data?.reviews);
+
+                    const fiveStarReviews = data?.reviews.filter(review => review.rating === 5);
+
+                    const uniqueReviews = [];
+                    const productIds = new Set();
+
+                    fiveStarReviews?.forEach((review) => {
+                        if (!productIds.has(review.product._id)) {
+                            uniqueReviews.push(review);
+                            productIds.add(review.product._id);
+                        }
+                    });
+
+                    setData(uniqueReviews);
                 } else {
                     console.log(data?.message);
                 }
@@ -52,7 +64,8 @@ function Testimonial() {
             }
         };
         fetchReview();
-    }, []);
+    }, [url]);
+
 
     return (
         <div className="w-[95%] m-auto py-10">

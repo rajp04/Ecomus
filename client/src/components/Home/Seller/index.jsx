@@ -132,7 +132,7 @@ function Seller() {
                                         </div>
                                     </div>
                                     <div className="tooltip">
-                                        <div className="hidden group-hover:block transition-all duration-1000" onClick={() => navigate(`${item?.productId?._id}`)}>
+                                        <div className="hidden group-hover:block transition-all duration-1000" onClick={() => navigate(`/shop-default/${item?._id}`)}>
                                             <MdOutlineRemoveRedEye className=" bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                                             <span className="tooltiptext">Quick View</span>
                                         </div>
