@@ -8,6 +8,7 @@ import { FaPlus } from 'react-icons/fa6';
 import { MdOutlineLocalShipping } from 'react-icons/md';
 import { Button } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Cart() {
 
@@ -16,6 +17,8 @@ function Cart() {
   const [time, setTime] = useState(10 * 60);
   const token = localStorage.getItem('userToken');
   const url = import.meta.env.VITE_SERVER_URL
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -210,7 +213,7 @@ function Cart() {
                 <input type="checkbox" name="" id="" />
                 <h1>I agree with the <span className='underline font-medium text-black'>terms and conditions</span></h1>
               </div>
-              <Button className="check-btn w-full">Check out</Button>
+              <Button className="check-btn w-full" onClick={()=> navigate('/checkout')}>Check out</Button>
               <h1 className='pt-5 font-medium text-center'>Guarantee Safe Checkout</h1>
               <div className="flex items-center justify-center pb-5 sm:space-x-3 space-x-1">
                 <img src="https://themesflat.co/html/ecomus/images/payments/visa.png" alt="visa" />

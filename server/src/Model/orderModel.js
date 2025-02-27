@@ -43,9 +43,9 @@ const orderSchema = new mongoose.Schema(
             enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled'],
             default: 'Pending',
         },
-        address:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Address"
+        address: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Address"
         }
     },
     {

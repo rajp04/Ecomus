@@ -142,4 +142,27 @@ const Update = async (req, res) => {
     }
 }
 
-module.exports = { Create, GetCart, GetCartByUser, Delete, Update }
+
+const DeleteAll = async (req, res) => {
+    try {
+
+        const id = req.user
+
+        const result = await Cart.deleteMany({ userId: id });
+
+        res.json({
+            success: 1,
+            message: "Updated cart item",
+            result
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: 0,
+            message: error.message
+        });
+    }
+}
+
+
+module.exports = { Create, GetCart, GetCartByUser, Delete, Update, DeleteAll }

@@ -32,13 +32,6 @@ const Create = async (req, res) => {
     try {
         const { userId, name, mobile, email, address, city, country, notes } = req.body;
 
-        if (!userId || !name || !mobile || !email || !address || !city || !country) {
-            return res.json({
-                success: 0,
-                message: "Missing required fields."
-            });
-        }
-
         const newAddress = new Address({ userId, name, mobile, email, address, city, country, notes });
         const result = await newAddress.save();
 

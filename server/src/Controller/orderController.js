@@ -3,16 +3,10 @@ const Order = require('../Model/orderModel.js');
 // Create a new order
 const Create = async (req, res) => {
     try {
-        const { userId, orderItems, totalPrice, address } = req.body;
+        const id = req.user
+        const { orderItems, totalPrice, address } = req.body;
 
-        if (!userId || !orderItems || !totalPrice) {
-            return res.json({
-                success: 0,
-                message: "Missing required fields."
-            });
-        }
-
-        const newOrder = new Order({ userId, orderItems, totalPrice, address });
+        const newOrder = new Order({ userId: id, orderItems, totalPrice, address });
         const result = await newOrder.save();
 
         return res.json({

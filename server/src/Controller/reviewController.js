@@ -1,4 +1,4 @@
-const Review = require('../model/reviewModel.js');
+const Review = require('../Model/reviewModel');
 
 // Create a review
 const Create = async (req, res) => {
@@ -42,11 +42,11 @@ const GetReviews = async (req, res) => {
 // Delete a review
 const Reviews = async (req, res) => {
     try {
-        const reviews = await Review.find().populate('product');  
+        const reviews = await Review.find().populate('product');
         res.status(200).json({
             message: "Reviews fetched successfully",
             success: 1,
-            reviews, 
+            reviews,
         });
     } catch (error) {
         res.status(500).json({
