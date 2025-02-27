@@ -280,7 +280,14 @@ function Checkout() {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     console.log(cartDelete);
-                    userData.name('')
+                    setUserData({
+                        name: '',
+                        country: '',
+                        city: '',
+                        address: '',
+                        mobile: '',
+                        email: '',
+                    });
 
                 } else {
                     throw new Error("Order creation failed.");
