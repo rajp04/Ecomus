@@ -61,61 +61,59 @@ function Checkout() {
             });
 
             if (data?.success === 1) {
-
-                const orderItems = cart.map((item) => {
+                const orderPromises = cart.map(async (item) => {
                     if (!item.productId || !item.productId._id) {
                         throw new Error("Product data is incomplete.");
                     }
 
-                    return {
+                    const orderData = {
                         productId: item.productId._id,
                         quantity: item.qty,
                         priceAtOrder: item.productId.variants?.[0].price,
                         color: item.productId.variants?.[0].color,
                         size: item.productId.variants?.[0].size?.[0],
                         discount: item.productId.variants?.[0].discount,
+                        address: data.result._id,
                     };
+
+                    const { data: orderDataResponse } = await axios.post(`${url}/order/create`, orderData, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    
+
+                    if (orderDataResponse?.success !== 1) {
+                        throw new Error("Order creation failed.");
+                    }
+
+                    return orderDataResponse.order;
                 });
 
-                const orderData = {
-                    orderItems,
-                    totalPrice,
-                    address: data.result._id,
-                };
+                const createdOrders = await Promise.all(orderPromises);
+                console.log("Created Orders:", createdOrders);
 
-                const { data: orderDatas } = await axios.post(`${url}/order/create`, orderData, {
+                const cartDelete = await axios.delete(`${url}/cart/delete/all/${token}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                if (orderDatas?.success === 1) {
+                console.log(cartDelete);
+                setUserData({
+                    name: '',
+                    country: '',
+                    city: '',
+                    address: '',
+                    mobile: '',
+                    email: '',
+                });
 
-                    const cartDelete = await axios.delete(`${url}/cart/delete/all/${token}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    });
-                    console.log(cartDelete);
-                    setUserData({
-                        name: '',
-                        country: '',
-                        city: '',
-                        address: '',
-                        mobile: '',
-                        email: '',
-                    });
-
-                } else {
-                    throw new Error("Order creation failed.");
-                }
+                // alert('Order placed successfully!');
+            } else {
+                throw new Error("Failed to save address.");
             }
-
-            console.log("Address saved:", data);
-
-
         } catch (error) {
             console.error('Error placing order:', error.message);
-            alert(`Error placing order: ${error.message || 'Something went wrong, please try again.'}`);
+            // alert(`Error placing order: ${error.message || 'Something went wrong, please try again.'}`);
         }
     };
-
 
     return (
         <>

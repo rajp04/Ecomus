@@ -1,33 +1,44 @@
 const Order = require('../Model/orderModel.js');
 
-// Create a new order
+// Add order controller
 const Create = async (req, res) => {
     try {
         const id = req.user
-        const { orderItems, totalPrice, address } = req.body;
+        const { productId, quantity, priceAtOrder, color, size, discount, address } = req.body;
 
-        const newOrder = new Order({ userId: id, orderItems, totalPrice, address });
-        const result = await newOrder.save();
+        if (!productId || !quantity || !priceAtOrder || !color || !size || !address) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
 
-        return res.json({
-            success: 1,
-            message: "Order created successfully.",
-            result
+        const totalPrice = priceAtOrder * quantity - discount;
+
+        const newOrder = new Order({
+            userId: id,
+            productId,
+            quantity,
+            priceAtOrder,
+            color,
+            size,
+            discount,
+            totalPrice,
+            address,
         });
+
+        const savedOrder = await newOrder.save();
+
+        return res.status(201).json({ message: 'Order added successfully', success: 1, order: savedOrder });
     } catch (error) {
-        return res.json({
-            success: 0,
-            message: error.message
-        });
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
     }
 };
 
 // Get an order by ID
 const GetOrder = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.user;
 
-        const result = await Order.find({ userId: id }).populate('userId').populate('orderItems.productId').populate('address');
+        const result = await Order.find({ userId: id }).populate('userId').populate('productId').populate('address');
 
         if (!result) {
             return res.json({
