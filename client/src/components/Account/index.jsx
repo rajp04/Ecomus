@@ -49,7 +49,7 @@ function Account() {
                         <button className={`${select === 'wishlist' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => handleSelect('wishlist')}>Wishlist</button>
                         <button className={`${select === 'logout' ? 'bg-[#f2f2f2] text-[red]' : 'border'} w-full text-start px-3 py-3 rounded-md font-semibold`} onClick={() => {
                             handleSelect('logout')
-                            localStorage.removeItem('token')
+                            localStorage.removeItem('userToken')
                             navigate('/login')
                         }}>Logout</button>
                     </div>

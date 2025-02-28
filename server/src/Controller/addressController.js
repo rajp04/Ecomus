@@ -3,7 +3,7 @@ const Address = require('../Model/addressModel.js');
 // Get all addresses for a user
 const GetAddress = async (req, res) => {
     try {
-        const { userId } = req.params;
+        const { userId } = req.user;
 
         const result = await Address.find({ userId }).populate('userId');
 

@@ -2,9 +2,13 @@ import Header from "../Header";
 import Footer from "../Footer";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Button } from "@mui/material";
 
 function Checkout() {
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState();
+    const [addressData, setAddressData] = useState();
+    const [id, setId] = useState();
+
     const [userData, setUserData] = useState({
         name: '',
         country: '',
@@ -42,7 +46,7 @@ function Checkout() {
     }, [token, url]);
 
     useEffect(() => {
-        const total = cart.reduce((acc, item) =>
+        const total = cart?.reduce((acc, item) =>
             acc + ((item.productId.variants?.[0].price - item.productId.variants?.[0].discount) * item.qty),
             0
         );
@@ -60,7 +64,7 @@ function Checkout() {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            if (data?.success === 1) {
+            if (data?.success === 1 || id) {
                 const orderPromises = cart.map(async (item) => {
                     if (!item.productId || !item.productId._id) {
                         throw new Error("Product data is incomplete.");
@@ -73,13 +77,13 @@ function Checkout() {
                         color: item.productId.variants?.[0].color,
                         size: item.productId.variants?.[0].size?.[0],
                         discount: item.productId.variants?.[0].discount,
-                        address: data.result._id,
+                        address: data?.result?._id || id,
                     };
 
                     const { data: orderDataResponse } = await axios.post(`${url}/order/create`, orderData, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
-                    
+
 
                     if (orderDataResponse?.success !== 1) {
                         throw new Error("Order creation failed.");
@@ -105,15 +109,31 @@ function Checkout() {
                     email: '',
                 });
 
-                // alert('Order placed successfully!');
             } else {
                 throw new Error("Failed to save address.");
             }
         } catch (error) {
             console.error('Error placing order:', error.message);
-            // alert(`Error placing order: ${error.message || 'Something went wrong, please try again.'}`);
         }
     };
+
+    useEffect(() => {
+        const fetchAddress = async () => {
+            try {
+                const { data } = await axios.get(`${url}/address/${token}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (data?.success === 1) {
+                    setAddressData(data?.result);
+                } else {
+                    console.log(data?.message);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchAddress();
+    });
 
     return (
         <>
@@ -192,6 +212,22 @@ function Checkout() {
                             className="border border-gray-300 rounded-md py-3 px-4 opacity-60 outline-black w-full"
                         />
                     </div>
+
+                    <div className="grid grid-cols-2 gap-10 justify-between text-center pt-10 ">
+                        {addressData?.map((item, index) => (
+                            <div key={index}>
+                                <div className="w-[80%] m-auto">
+                                    <p>{item?.name}</p>
+                                    <p>{item?.address} {item?.city}</p>
+                                    <p>{item?.email}</p>
+                                    <p>{item?.mobile}</p>
+                                    <div className="space-x-3 pt-3 flex items-center justify-center">
+                                        <Button className="add_btn" onClick={() => setId(item._id)}>Select Address</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 <div className="llg:col-span-4 col-span-8">
@@ -214,7 +250,7 @@ function Checkout() {
                         ))}
                         <div className="text-2xl font-semibold flex justify-between">
                             <h1>Total</h1>
-                            <h1>₹{totalPrice}</h1>
+                            <h1>₹{totalPrice || 0}</h1>
                         </div>
                         <button className="text-center w-full bg-black text-white rounded-md py-3" onClick={handleOrder}>
                             Place order
