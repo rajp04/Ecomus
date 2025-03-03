@@ -8,7 +8,7 @@ router.route('/create').post(AdminAuthJwt, upload.array('images'), Create)
 router.route('/admin').get(AdminAuthJwt, GetAllProducts)
 router.route('/users').get(GetAllProducts)
 router.route('/:id').get(GetProductById)
-router.route('/update/:id').put(AdminAuthJwt, upload.array('images'), Update)
+router.route('/update/:productId').put(AdminAuthJwt, upload.array('images'), Update)
 router.route('/delete/:id').delete(AdminAuthJwt, Delete)
 
 module.exports = router;

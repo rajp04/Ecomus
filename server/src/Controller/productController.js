@@ -98,35 +98,6 @@ const GetProductById = async (req, res) => {
 };
 
 // Update a product by ID
-// const Update = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const updates = req.body;
-
-//         // Handle file upload if images are provided
-//         if (req.files && req.files.length > 0) {
-//             for (const variant of updates.variants) {
-//                 const uploadedImages = await Promise.all(
-//                     req.files.map(async (file) => {
-//                         const result = await uploadOnCloudinary(file.buffer, file.originalname);
-//                         return result.secure_url;
-//                     })
-//                 );
-//                 variant.images = uploadedImages;
-//             }
-//         }
-
-//         const updatedProduct = await Product.findByIdAndUpdate(id, updates, { new: true });
-
-//         if (!updatedProduct) {
-//             return res.status(404).json({ message: "Product not found" });
-//         }
-
-//         res.status(200).json({ message: "Product updated successfully", data: updatedProduct });
-//     } catch (error) {
-//         res.status(500).json({ message: "Error updating product", error: error.message });
-//     }
-// };
 const Update = async (req, res) => {
     try {
         const { productId } = req.params;

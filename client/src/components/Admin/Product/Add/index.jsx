@@ -93,8 +93,6 @@ function AddProduct() {
                 },
             });
 
-            console.log(result);
-
             if (result?.data?.success) {
                 navigate('/admin/product');
             } else {

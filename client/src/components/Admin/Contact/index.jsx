@@ -8,13 +8,14 @@ function AdminContact() {
     const [data, setData] = useState()
     const [error, setError] = useState()
     const [searchQuery, setSearchQuery] = useState("");
-
+    const url = import.meta.env.VITE_SERVER_URL
+    
     useEffect(() => {
         const fetchInquiry = async () => {
             try {
                 const token = sessionStorage.getItem('token');
 
-                const { data } = await axios.get(`http://localhost:7001/api/inquiry`, {
+                const { data } = await axios.get(`${url}/inquiry`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
