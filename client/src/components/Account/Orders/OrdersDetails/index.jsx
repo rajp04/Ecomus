@@ -9,8 +9,6 @@ import { useLocation } from "react-router-dom";
 function OrderDetails() {
 
   const { state } = useLocation();
-  console.log(state);
-  
 
   const [select, setSelect] = useState('history');
 

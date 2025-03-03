@@ -596,11 +596,11 @@ function Header() {
                 {/* User Login */}
                 <div className="sm:flex hidden">
                     {token ? (
-                        <Link to="https://ecomus-brown.vercel.app/account">
+                        <Link to="/account">
                             <FiUser />
                         </Link>
                     ) : (
-                        <Link to="https://ecomus-brown.vercel.app/login">
+                        <Link to="/login">
                             <FiUser />
                         </Link>
                     )}
@@ -614,7 +614,7 @@ function Header() {
                                 {wishlist?.length}
                             </p>
                         }
-                        <Link to="https://ecomus-brown.vercel.app/wishlist">
+                        <Link to="/wishlist">
                             <FaRegHeart />
                         </Link>
                     </div>

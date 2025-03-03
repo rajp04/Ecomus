@@ -34,8 +34,10 @@ function Seller() {
         .sort((a, b) => b.totalSold - a.totalSold)
         .slice(0, 12);
 
+    const hasMoreProducts = topSoldProducts?.length > visibleCount;
+
     const handleLoadMore = () => {
-        setVisibleCount(prevCount => prevCount + 4); 
+        setVisibleCount(prevCount => prevCount + 4);
     };
 
     const handleWishlist = async (id) => {
@@ -163,9 +165,11 @@ function Seller() {
                     </div>
                 ))}
             </div>
-            <div className="flex justify-center pt-5">
-                <button className="border text-lg font-semibold border-black px-10 py-3 rounded-lg" onClick={handleLoadMore}>Load more</button>
-            </div>
+            {hasMoreProducts &&
+                <div className="flex justify-center pt-5">
+                    <button className="border text-lg font-semibold border-black px-10 py-3 rounded-lg" onClick={handleLoadMore}>Load more</button>
+                </div>
+            }
         </div>
     )
 }
