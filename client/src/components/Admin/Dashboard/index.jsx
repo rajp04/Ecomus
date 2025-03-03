@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MyContext } from "..";
 import { TbTrendingUp } from "react-icons/tb";
 import { TbShoppingCartCopy } from "react-icons/tb";
@@ -7,7 +7,9 @@ import { FaUsers } from "react-icons/fa6";
 import { LineChart, lineElementClasses } from '@mui/x-charts/LineChart';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import { BarChart } from '@mui/x-charts/BarChart';
-
+import axios from 'axios'
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "../../../slices/UserSlice";
 
 const data = [
   { label: 'Group A', value: 400, color: '#0088FE' },
@@ -30,8 +32,51 @@ const getArcLabel = (params) => {
 };
 
 function Dashboard() {
-
+  const dispatch = useDispatch();
   const { setOpenProfile } = useContext(MyContext);
+  const { users, status } = useSelector((state) => state.user);
+  const [orderData, setOrderData] = useState()
+  const [newData, setNewData] = useState()
+  const url = import.meta.env.VITE_SERVER_URL;
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const token = sessionStorage.getItem('token');
+
+      try {
+        const { data } = await axios.get(`${url}/order/order/admin`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (data?.success === 1) {
+          setOrderData(data?.result);
+        } else {
+          setOrderData([]);
+        }
+      } catch (error) {
+        console.log(error);
+        setOrderData([]);
+      }
+    };
+    fetchProduct();
+  }, []);
+
+  const total = orderData?.reduce((sum, item) => sum + item.totalPrice, 0);
+
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchUsers());
+    }
+  }, [status, dispatch]);
+
+  useEffect(() => {
+    if (orderData?.length > 0) {
+      const sortedData = orderData?.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      const latest5Data = sortedData?.slice(0, 5);
+      setNewData(latest5Data)
+    }
+  }, [orderData]);
 
   return (
     <div className="pt-[98px] overflow-y-auto px-5 pb-5 " onClick={() => setOpenProfile(false)}>
@@ -43,7 +88,7 @@ function Dashboard() {
           </div>
           <div className="text-white">
             <h1 className="font-bold text-lg">Total Sales</h1>
-            <h1 className="text-2xl font-bold">$508</h1>
+            <h1 className="text-2xl font-bold">&#8377;{total}</h1>
           </div>
         </div>
         <div className="col-span-1 flex items-center justify-between bg-red-500 p-5 rounded-md">
@@ -52,7 +97,7 @@ function Dashboard() {
           </div>
           <div className="text-white">
             <h1 className="font-bold text-lg">Total Orders</h1>
-            <h1 className="text-2xl font-bold">500</h1>
+            {orderData && <h1 className="text-2xl font-bold">{orderData?.length}</h1>}
           </div>
         </div>
         <div className="col-span-1 flex items-center justify-between bg-blue-500 p-5 rounded-md">
@@ -61,7 +106,7 @@ function Dashboard() {
           </div>
           <div className="text-white">
             <h1 className="font-bold text-lg">Total User</h1>
-            <h1 className="text-2xl font-bold">1000</h1>
+            <h1 className="text-2xl font-bold">{users?.result?.length}</h1>
           </div>
         </div>
         <div className="col-span-1 flex items-center justify-between bg-yellow-500 p-5 rounded-md">
@@ -132,53 +177,38 @@ function Dashboard() {
         <h1 className="text-3xl font-semibold">Recent Order</h1>
         <div className="overflow-x-auto scroll-hidden-show whitespace-nowrap">
           <table className="w-full border-collapse mt-5">
-            <tr>
-              <th className="bg-[#43435e] text-white">Order Id</th>
-              <th className="bg-[#43435e] text-white">Product Name</th>
-              <th className="bg-[#43435e] text-white">SKU</th>
-              <th className="bg-[#43435e] text-white">Price</th>
-              <th className="bg-[#43435e] text-white">Color</th>
-              <th className="bg-[#43435e] text-white">Size</th>
-              <th className="bg-[#43435e] text-white">Quantity</th>
-              <th className="bg-[#43435e] text-white">Payment Status</th>
-              <th className="bg-[#43435e] text-white">Action</th>
-            </tr>
-            <tr>
-              <td>858548462848</td>
-              <td>Maria Anders</td>
-              <td>SK8574205</td>
-              <td>500</td>
-              <td>White</td>
-              <td>42</td>
-              <td>20</td>
-              <td>Pending</td>
-              <td className="space-x-2">
-                <button className="bg-green-600 px-2 rounded-md py-1 text-white text-2xl">
-                  View
-                </button>
-                <button className="bg-red-600 px-2 rounded-md py-1 text-white text-2xl">
-                  Reject
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>858548462848</td>
-              <td>Maria Anders</td>
-              <td>SK8574205</td>
-              <td>500</td>
-              <td>White</td>
-              <td>42</td>
-              <td>20</td>
-              <td>Pending</td>
-              <td className="space-x-2">
-                <button className="bg-green-600 px-2 rounded-md py-1 text-white text-2xl">
-                  View
-                </button>
-                <button className="bg-red-600 px-2 rounded-md py-1 text-white text-2xl">
-                  Reject
-                </button>
-              </td>
-            </tr>
+            <thead>
+              <tr>
+                <th className="bg-[#43435e] text-white">Order Id</th>
+                <th className="bg-[#43435e] text-white">User Id</th>
+                <th className="bg-[#43435e] text-white">SKU</th>
+                <th className="bg-[#43435e] text-white">Price</th>
+                <th className="bg-[#43435e] text-white">Color</th>
+                <th className="bg-[#43435e] text-white">Size</th>
+                <th className="bg-[#43435e] text-white">Quantity</th>
+                <th className="bg-[#43435e] text-white">Order Status</th>
+                <th className="bg-[#43435e] text-white">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {newData?.map((item, index) => (
+                <tr key={index}>
+                  <td>#{item?._id?.slice(-4)}</td>
+                  <td>#{item?.userId._id?.slice(-4)}</td>
+                  <td>#{item?.productId.sku}</td>
+                  <td>{item?.priceAtOrder}</td>
+                  <td>{item?.color}</td>
+                  <td>{item?.size?.slice(0, 1)}</td>
+                  <td>{item?.quantity}</td>
+                  <td>{item?.orderStatus}</td>
+                  <td className="space-x-2">
+                    <button className="bg-green-600 px-2 rounded-md py-1 text-white text-2xl">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>

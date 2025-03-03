@@ -7,6 +7,7 @@ function AdminContact() {
     const { setOpenProfile } = useContext(MyContext);
     const [data, setData] = useState()
     const [error, setError] = useState()
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const fetchInquiry = async () => {
@@ -30,6 +31,17 @@ function AdminContact() {
         fetchInquiry()
     }, [])
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const filteredOrders = data?.filter(order => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            (order?.name?.toLowerCase().includes(searchLower)) 
+        );
+    });
+
     return (
         <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
             <h1 className="text-3xl font-semibold">Users Inquiry</h1>
@@ -37,7 +49,7 @@ function AdminContact() {
             <div className="bg-white mt-5 rounded-md p-5 w-full">
                 <div className="space-y-2">
                     <h1 className="text-xl font-semibold">Search</h1>
-                    <input type="text" className="outline-none bg-gray-200 w-full rounded-md py-2 px-4 font-medium text-lg" />
+                    <input type="text" className="outline-none bg-gray-200 w-full rounded-md py-2 px-4 font-medium text-lg" value={searchQuery} onChange={handleSearchChange}/>
                 </div>
                 <div className="overflow-x-auto whitespace-nowrap">
                     <table className="w-full border-collapse mt-5">
@@ -46,7 +58,7 @@ function AdminContact() {
                             <th className="bg-[#43435e] text-white">Email</th>
                             <th className="bg-[#43435e] text-white">Message</th>
                         </tr>
-                        {data?.map((item, index) => (
+                        {filteredOrders?.map((item, index) => (
                             <tr key={index}>
                                 <td>{item.name}</td>
                                 <td>{item.email}</td>

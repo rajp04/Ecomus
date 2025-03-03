@@ -11,6 +11,8 @@ function Product() {
     const { setOpenProfile } = useContext(MyContext);
     const navigate = useNavigate()
     const [error, setError] = useState();
+    const [searchQuery, setSearchQuery] = useState("");
+
     const [productData, setProductData] = useState();
     const url = import.meta.env.VITE_SERVER_URL
 
@@ -46,6 +48,17 @@ function Product() {
         }
     }
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const filteredOrders = productData?.filter(product => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            (product?.name?.toLowerCase().includes(searchLower))
+        );
+    });
+
     return (
         <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
             <div className="flex items-center justify-between">
@@ -56,7 +69,7 @@ function Product() {
             <div className="bg-white mt-5 rounded-md p-5 w-full">
                 <div className="space-y-2">
                     <h1 className="text-xl font-semibold">Search</h1>
-                    <input type="text" className="outline-none bg-gray-200 w-full rounded-md py-2 px-4 font-medium text-lg" />
+                    <input type="text" className="outline-none bg-gray-200 w-full rounded-md py-2 px-4 font-medium text-lg" value={searchQuery} onChange={handleSearchChange}/>
                 </div>
                 <div className="overflow-x-auto scroll-hidden-show whitespace-nowrap">
                     <table className="w-full border-collapse mt-5">
@@ -70,7 +83,7 @@ function Product() {
                             <th className="bg-[#43435e] text-white">Size</th>
                             <th className="bg-[#43435e] text-white">Action</th>
                         </tr>
-                        {productData && productData.map((item, index) => (
+                        {filteredOrders && filteredOrders.map((item, index) => (
                             <tr key={index}>
                                 <td>{item.name.length > 30 ? `${item.name.slice(0, 30)}...` : item.name}</td>
                                 <td>{item.description.length > 40 ? `${item.description.slice(0, 40)}...` : item.description}</td>

@@ -29,7 +29,7 @@ function ViewProduct() {
                     <div className="flex items-center space-x-3">
                         <h1 className="text-red-500 text-3xl">{state.variants[0].price - state.variants[0].discount}</h1>
                         <del className="opacity-70">{state.variants[0].price}</del>
-                        <p className="bg-orange-500 px-4 py-1 rounded-full text-white">{(state.variants[0].discount / state.variants[0].price) * 100}% OFF</p>
+                        <p className="bg-orange-500 px-4 py-1 rounded-full text-white">{Math.round((state.variants[0].discount / state.variants[0].price) * 100)}% OFF</p>
                     </div>
                     <h1 className="font-semibold text-xl ">Color:-</h1>
                     <div className="flex items-center space-x-3">

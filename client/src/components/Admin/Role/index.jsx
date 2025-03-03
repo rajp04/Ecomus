@@ -11,6 +11,8 @@ function Role() {
     const [error, setError] = useState();
     const [errors, setErrors] = useState();
     const [permissions, setPermissions] = useState();
+    const [searchQuery, setSearchQuery] = useState("");
+
     const navigate = useNavigate();
     const url = import.meta.env.VITE_SERVER_URL
 
@@ -59,6 +61,16 @@ function Role() {
         fetchRoles()
     }, [])
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const filteredOrders = roleData?.filter(order => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            (order?.role?.name?.toLowerCase().includes(searchLower)) 
+        );
+    });
 
     return (
         <div className="pt-[98px] overflow-y-auto px-5 pb-5" onClick={() => setOpenProfile(false)}>
@@ -73,7 +85,7 @@ function Role() {
             <div className="bg-white mt-5 rounded-md p-5 w-full">
                 <div className="space-y-2">
                     <h1 className="text-xl font-semibold">Search</h1>
-                    <input type="text" className="outline-none bg-gray-200 w-full rounded-md py-2 px-4 font-medium text-lg" />
+                    <input type="text" className="outline-none bg-gray-200 w-full rounded-md py-2 px-4 font-medium text-lg" value={searchQuery} onChange={handleSearchChange}/>
                 </div>
                 <div className="overflow-x-auto whitespace-nowrap">
                     <table className="w-full border-collapse mt-5">
@@ -84,7 +96,7 @@ function Role() {
                                 <th className="bg-[#43435e] text-white">Action</th>
                             }
                         </tr>
-                        {roleData && roleData.map((item, index) => (
+                        {filteredOrders && filteredOrders.map((item, index) => (
                             <tr key={index}>
                                 <td>{item.role?.name}</td>
                                 <td>{item.email}</td>

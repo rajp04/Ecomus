@@ -60,6 +60,32 @@ const GetOrder = async (req, res) => {
     }
 };
 
+
+const GetAdminOrder = async (req, res) => {
+    try {
+
+        const result = await Order.find().populate('userId').populate('productId').populate('address');
+
+        if (!result) {
+            return res.json({
+                success: 0,
+                message: "Order not found."
+            });
+        }
+
+        return res.json({
+            success: 1,
+            message: "Order retrieved successfully.",
+            result
+        });
+    } catch (error) {
+        return res.json({
+            success: 0,
+            message: error.message
+        });
+    }
+};
+
 // Update the status of an order
 const UpdateOrderStatus = async (req, res) => {
     try {
@@ -127,5 +153,5 @@ const Delete = async (req, res) => {
 };
 
 module.exports = {
-    Create, GetOrder, UpdateOrderStatus, Delete
+    Create, GetOrder, GetAdminOrder, UpdateOrderStatus, Delete
 };
