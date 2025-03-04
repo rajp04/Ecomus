@@ -19,6 +19,7 @@ function Footer() {
     const open1 = Boolean(anchorEl1);
 
     const url = import.meta.env.VITE_SERVER_URL
+    const token = localStorage.getItem('userToken')
     const navigate = useNavigate();
 
     const handleClick = (event) => {
@@ -94,7 +95,7 @@ function Footer() {
                         <h1 className="cursor-pointer  w-fit hover:text-[red]">Terms & Conditions</h1>
                         <h1 className="cursor-pointer  w-fit hover:text-[red]">FAQ’s</h1>
                         <h1 className="cursor-pointer  w-fit hover:text-[red]">Compare</h1>
-                        <h1 className="cursor-pointer w-fit hover:text-[red]">My Wishlist</h1>
+                        <h1 className="cursor-pointer w-fit hover:text-[red]" onClick={()=> navigate('/wishlist')}>My Wishlist</h1>
                     </div>
                 </div>
                 <div className="col-span-1 space-y-2">
@@ -105,9 +106,9 @@ function Footer() {
                     <div className={`${openPlus2 || 'md:block hidden'
                         } space-y-2`}>
                         <h1 className="pt-[13px] cursor-pointer w-fit hover:text-[red]">Our Story</h1>
-                        <h1 className="cursor-pointer w-fit hover:text-[red]">Visit Our Store</h1>
+                        <h1 className="cursor-pointer w-fit hover:text-[red]" onClick={()=> navigate('/shop-default')}>Visit Our Store</h1>
                         <h1 className="cursor-pointer w-fit hover:text-[red]" onClick={()=> navigate('/contact')}>Contact Us</h1>
-                        <h1 className="cursor-pointer w-fit hover:text-[red]" onClick={()=> navigate('/account')}>Account</h1>
+                        <h1 className="cursor-pointer w-fit hover:text-[red]" onClick={()=> navigate(`${token ? '/account' :"/login"}`)}>Account</h1>
                     </div>
                 </div>
                 <div className="col-span-1 space-y-2">

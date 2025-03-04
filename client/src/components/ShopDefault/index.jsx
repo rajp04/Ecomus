@@ -11,7 +11,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function ShopDefault() {
-  const [grid, setGrid] = useState(4);
+  const [grid, setGrid] = useState(1);
   const [screenSize, setScreenSize] = useState("lg");
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
@@ -229,18 +229,18 @@ function ShopDefault() {
             <div>
               {currentProducts?.map((item, index) => (
                 <div className=" space-y-2 col-span-1 pb-5" key={index}>
-                  <div className="flex xs:space-x-5 space-x-3">
-                    <div className="overflow-hidden rounded-md lg:w-auto md:w-[70%] w-[50%]">
+                  <div className="flex xs:space-x-5 space-x-3 w-[100%]">
+                    <div className=" rounded-md md:w-auto w-[50%]">
                       <img
                         src={item.images[0]}
                         alt=""
-                        className="rounded-md hover:scale-[1.12] transition-all duration-[2s] md:max-h-[450px] h-full lg:w-auto md:w-[70%] w-[50%]"
+                        className="rounded-md hover:scale-[1.12] transition-all duration-[2s] md:max-h-[450px] h-full md:w-auto w-[100%]"
                       />
                     </div>
-                    <div className="xs:space-y-3 space-y-1">
+                    <div className="xs:space-y-3 space-y-1 md:w-auto w-[50%]">
                       <h1 className="hover:text-[red]">{item.name}</h1>
                       <h1 className="font-semibold">₹ {item?.variants[0].price}</h1>
-                      <p className="max-w-[1000px] md:flex hidden]">{item.description}</p>
+                      <p className="max-w-[1000px] md:flex hidden">{item.description}</p>
                       <div className="flex items-center space-x-3">
                         {item.variants.map((variant, index) => (
                           <div
@@ -266,7 +266,7 @@ function ShopDefault() {
                         </div>
                         {token &&
                           <div className="tooltip">
-                            <div className="transition-all duration-1000" onClick={() => handleWishlist(item._id)}>
+                            <div className="transition-all duration-1000 md:flex hidden" onClick={() => handleWishlist(item._id)}>
                               <IoIosHeartEmpty className="bg-white cursor-pointer hover:bg-black hover:text-white rounded-md p-[8px] text-4xl transition-all duration-700" />
                               <span className="tooltiptext">Add to Wishlist</span>
                             </div>

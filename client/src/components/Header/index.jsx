@@ -98,7 +98,7 @@ function Header() {
             }
         };
         fetchCart();
-    },[token, url]);
+    }, [token, url]);
 
     React.useEffect(() => {
         if (token) {
@@ -120,7 +120,7 @@ function Header() {
 
             fetchWishlist();
         }
-    },[token, url]);
+    }, [token, url]);
 
     React.useEffect(() => {
         const fetchProduct = async () => {
@@ -136,7 +136,7 @@ function Header() {
             }
         }
         fetchProduct()
-    },[url])
+    }, [url])
 
     const filteredProducts = productData?.filter((product) =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -211,7 +211,7 @@ function Header() {
             sx={{ paddingTop: 0, padding: 0, margin: 0, backgroundColor: "white", zIndex: 100 }}
         >
             <List>
-                <div className="h-[100%] relative xs:w-[450px] w-auto bg-white">
+                <div className="h-[100%] relative xs:w-[450px] w-[300px] bg-white">
                     <div className="px-5 pt-7 fixed xs:w-[450px] w-auto border-b z-10 bg-white">
                         <div className="flex items-center justify-between xs:space-x-0 space-x-10">
                             <h1 className="text-3xl font-semibold whitespace-nowrap">Search our site</h1>
@@ -223,7 +223,7 @@ function Header() {
                                 onChange={(e) => setSearchQuery(e.target.value)} />
                         </div>
                     </div>
-                    <div className="px-5 xs:pt-[32%] pt-[48%]">
+                    <div className="px-5 xs:pt-[32%] pt-[48%] ">
                         <h1 className="text-2xl font-semibold">Quick link</h1>
                         <div className="flex flex-col pt-3 space-y-1">
                             <h1>Fashion</h1>
@@ -429,7 +429,7 @@ function Header() {
                             <div className={`${openItem === "pages" ? "flex flex-col transition-all duration-300" : "hidden"} border-l my-3 mx-5 ps-5 space-y-2`}>
                                 <h1>About Us</h1>
                                 <h1>Brands</h1>
-                                <h1>Contact</h1>
+                                <h1 onClick={()=> navigate('/contact')}>Contact</h1>
                             </div>
                         </div>
 
@@ -458,11 +458,11 @@ function Header() {
 
                         {/* Wishlist and Search */}
                         <div className="flex items-center pt-5 space-x-2">
-                            <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md">
+                            <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md" onClick={() => navigate('/wishlist')}>
                                 <FaRegHeart />
                                 <h1>Wishlist</h1>
                             </div>
-                            <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md">
+                            <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md" onClick={toggleDrawerSearch(true)}>
                                 <IoSearch />
                                 <h1>Search</h1>
                             </div>
@@ -476,7 +476,7 @@ function Header() {
                         </div>
                     </div>
                     <div>
-                        <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md w-fit my-3">
+                        <div className="flex items-center text-black px-4 py-2 space-x-3 text-xl bg-gray-200 rounded-md w-fit my-3" onClick={()=> navigate('/login')}>
                             <FiUser />
                             <h1>Login</h1>
                         </div>

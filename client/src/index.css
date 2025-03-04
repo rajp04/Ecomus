@@ -3,6 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html{
+    padding: 0px!important;
+    margin: 0px!important;
+    box-sizing: border-box!important;
+}
+
 body.light {
     background: #f2efef;
 }

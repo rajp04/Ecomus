@@ -74,11 +74,11 @@ function LookBook() {
                         <img
                             src={product?.images?.[0]}
                             alt={`Product ${index + 1}`}
-                            className="w-full h-screen"
+                            className="w-full sm:h-screen h-auto"
                         />
                         <div
                             className="absolute hover:animate-ping bg-white rounded-full h-8 w-8 cursor-pointer flex items-center justify-center"
-                            style={{ top: "50%", left: "50%" }}
+                            style={{ top: "40%", left: "50%" }}
                             onClick={() => handleOpen(`${index}`)}
                         >
                             <p className="bg-black rounded-full h-2 w-2 fixed"></p>
@@ -87,12 +87,16 @@ function LookBook() {
                         {/* Menu */}
                         <div
                             className={`${openMenu === `${index}` ? "flex" : "hidden"
-                                } absolute px-3 py-2 space-x-3 bg-white items-center justify-center`}
-                            style={{ top: "calc(50% + 6%)", left: "calc(50% - 18%)" }}
+                                } absolute sm:px-3 px-1 py-2 space-x-3 bg-white items-center w-[260px] justify-center `}
+                            style={{
+                                top: "52%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                            }}
                         >
                             <img src={product?.images?.[0]} alt={product?.name} className="h-24" />
                             <div>
-                                <h1 className="w-40">{product?.name}</h1>
+                                <h1 className="text-xs w-28">{product?.name}</h1>
                                 <p className="font-semibold">
                                     ₹{product?.variants?.[0].price - product?.variants?.[0].discount}
                                 </p>
